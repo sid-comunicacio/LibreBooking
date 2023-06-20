@@ -28,6 +28,10 @@ class ColumnNames
     public const DEFAULT_SCHEDULE_ID = 'default_schedule_id';
     public const USER_PREFERENCES = 'preferences';
     public const USER_STATUS = 'status_id';
+    public const VALIDITY_START = 'validity_start';
+    public const VALIDITY_END = 'validity_end';
+    public const SANCTION_START = 'sanction_start';
+    public const SANCTION_END = 'sanction_end';
 
     // USER_ADDRESSES //
     public const ADDRESS_ID = 'address_id';

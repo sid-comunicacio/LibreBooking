@@ -39,6 +39,12 @@ function UserManagement(opts) {
 		deleteDialog: $('#deleteDialog'),
 		deleteUserForm: $('#deleteUserForm'),
 
+		sanctionDialog: $('#sanctionDialog'),
+		sanctionForm: $('#sanctionForm'),
+		
+		importProductorsForm: $('#importProductorsForm'),
+		importProductorsDialog: $('#importProductorsDialog'),
+				
 		addDialog: $('#addUserDialog'),
 
 		invitationDialog: $('#invitationDialog'),
@@ -65,6 +71,20 @@ function UserManagement(opts) {
 			setActiveUserElement($(this));
 			e.preventDefault();
 		});
+
+		elements.userList.delegate('.doSanction', 'click', function () {
+			var user = getActiveUser();
+
+			ClearAsyncErrors(elements.sanctionDialog);
+
+			$('#addStartDate').val(user.sanctionStart);
+			$('#addStartDate').trigger( "change" );
+			$('#addEndDate').val(user.sanctionEnd);
+			$('#addEndDate').trigger( "change" );
+
+			elements.sanctionDialog.modal('show');
+		});
+			
 
 		elements.userList.delegate('.changeStatus', 'click', function (e) {
 			changeStatus($(this));
@@ -191,6 +211,19 @@ function UserManagement(opts) {
 			$('#importResults').addClass('no-show');
 			elements.importUsersDialog.modal('show');
 		});
+		
+		$('#import-productors').click(function (e) {
+			e.preventDefault();
+			$('#importProductorsErrors').empty().addClass('no-show');
+			$('#importProductorsResults').addClass('no-show');
+
+			$('#addNewValidityStartDate').val();
+			$('#addNewValidityStartDate').trigger( "change" );
+			$('#addNewValidityEndDate').val();
+			$('#addNewValidityEndDate').trigger( "change" );
+			elements.importProductorsDialog.modal('show');
+		});
+			
 
 		elements.deleteMultiplePrompt.click(function(e){
 			e.preventDefault();
@@ -257,7 +290,27 @@ function UserManagement(opts) {
 				errors.html('<div>' + messages + '</div>').removeClass('no-show');
 			}
 		};
+		var importProductorsHandler = function (responseText, form) {
+			// console.log('importProductorsHandler 1', responseText);
+			if (!responseText)
+			{
+				return;
+			}
 
+			$('#importProductorsCount').text(responseText.importCount);
+			$('#importProductorsOk').text(responseText.nius.length > 0 ? responseText.nius.join(',') : '0');
+			$('#importProductorsResult').removeClass('no-show');
+
+			var errors = $('#importProductorsErrors');
+			errors.empty();
+			// console.log('importProductorsHandler 2', responseText);
+			if (responseText.messages && responseText.messages.length > 0)
+			{
+				var messages = responseText.messages.join('</li><li>');
+				errors.html('<div>' + messages + '</div>').removeClass('no-show');
+			}
+		};
+			
 		var inviteHandler = function(responseText, form) {
 			elements.inviteEmails.val('');
 			elements.invitationDialog.modal('hide');
@@ -270,6 +323,8 @@ function UserManagement(opts) {
 		ConfigureAsyncForm(elements.passwordForm, defaultSubmitCallback(elements.passwordForm), hidePasswordDialog, error);
 		ConfigureAsyncForm(elements.userForm, defaultSubmitCallback(elements.userForm), hideDialogCallback(elements.userDialog));
 		ConfigureAsyncForm(elements.deleteUserForm, defaultSubmitCallback(elements.deleteUserForm), hideDialogCallback(elements.deleteDialog), error);
+		ConfigureAsyncForm(elements.sanctionForm, defaultSubmitCallback(elements.sanctionForm), hideDialogCallback(elements.sanctionDialog));
+		ConfigureAsyncForm(elements.importProductorsForm, defaultSubmitCallback(elements.importProductorsForm), importProductorsHandler);
 		ConfigureAsyncForm(elements.addUserForm, defaultSubmitCallback(elements.addUserForm), hideDialogCallback(elements.addDialog));
 		ConfigureAsyncForm(elements.colorForm, defaultSubmitCallback(elements.colorForm));
 		ConfigureAsyncForm(elements.importUsersForm, defaultSubmitCallback(elements.importUsersForm), importHandler);
@@ -411,6 +466,12 @@ function UserManagement(opts) {
 		// $('#phone').val(user.phone);
 		// $('#organization').val(user.organization);
 		// $('#position').val(user.position);
+
+		$('#addValidityStartDate').val(user.validityStart);
+		$('#addValidityStartDate').trigger( "change" );
+		$('#addValidityEndDate').val(user.validityEnd);
+		$('#addValidityEndDate').trigger( "change" );
+		
 
 		elements.userDialog.modal('show');
 	};

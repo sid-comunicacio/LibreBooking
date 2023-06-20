@@ -50,26 +50,12 @@
                 <span class="fa fa-copy"></span>
                 {translate key='DuplicateReservation'}</a>
         </li>
-
-        <li class="divider"></li>
-        <li>
-        {if $IsRecurring}
-            <a href="#" class="delete prompt">
-                <span class="fa fa-remove remove icon"></span>
-                {translate key='Delete'}
-            </a>
-
-{else}
-
-            <a href="#" class="triggerDeletePrompt delete prompt-single">
-                <span class="fa fa-remove remove icon"></span>
-                {translate key='Delete'}
-            </a>
-        {/if}
-        </li>
     </ul>
 </div>
-
+<button type="button" class="btn btn-danger {if $IsRecurring}delete prompt{else}triggerDeletePrompt delete prompt-single{/if}">
+    <span class="fa fa-remove"></span>
+    {translate key='Delete'}
+</button>
 
 {if $CheckInRequired && (!checkinAdminOnly || $CanViewAdmin)}
     <button type="button" class="btn btn-warning btnCheckin"><i class="fa fa-sign-in"></i> {translate key=CheckIn}
@@ -152,6 +138,18 @@
         </div>
     </div>
 </div>
+{/block}
+
+{block name="createDate"}  
+	<div class="col-xs-12 reservationDates">
+		<div class="col-md-12 no-padding-left">
+			<div class="form-group no-margin-bottom">
+				<label for="CreateDate" class="createDate">{translate key='CreateDate'}</label>
+				<input type="text" id="CreateDate" class="form-control input-sm inline-block {*dateinput*}"
+													value="{formatdate date=$CreateDate key=general_datetime}" readonly/>
+			</div>
+		</div>
+	</div>
 {/block}
 
 {block name="ajaxMessage"}

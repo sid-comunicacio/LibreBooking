@@ -285,6 +285,17 @@ class FormKeys
 
     public const VALUE = 'value';
 
+    public const SANCTION_START = 'SANCTION_START';
+    public const SANCTION_END = 'SANCTION_END';
+    
+    public const VALIDITY_START = 'VALIDITY_START';
+    public const VALIDITY_END = 'VALIDITY_END';
+    
+    public const NEW_VALIDITY_START = 'VALIDITY_START';
+    public const NEW_VALIDITY_END = 'VALIDITY_END';
+    public const UPDATE_PRODUCTOR_ON_IMPORT = 'UPDATE_PRODUCTOR_ON_IMPORT';
+    public const PRODUCTORS_LIST = 'PRODUCTORS_LIST';
+
     public static function Evaluate($formKey)
     {
         $key = strtoupper($formKey);

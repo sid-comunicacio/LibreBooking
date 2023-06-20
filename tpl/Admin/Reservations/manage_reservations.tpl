@@ -176,6 +176,7 @@
 			{if $reservation->RequiresApproval}
 				{assign var=rowCss value='pending'}
 			{/if}
+			{if $reservation->IsDeleted}{assign var=rowCss value="deleted"}{/if}
 			{assign var=reservationId value=$reservation->ReservationId}
 			<tr class="{$rowCss} {if $IsDesktop}editable{/if}" data-seriesId="{$reservation->SeriesId}" data-refnum="{$reservation->ReferenceNumber}">
 				<td class="id hidden">{$reservationId}</td>
@@ -212,15 +213,19 @@
 				<td class="action">
 					{if $reservation->RequiresApproval}
 						<a href="#" class="update approve"><span class="fa fa-check icon add"></span></a>
+					{elseif $reservation->IsDeleted}
+						{translate key=Rejected}
 					{else}
-						-
+						{translate key=Approved}
 					{/if}
 				</td>
 				<td class="action">
-					<a href="#" class="update delete">
-                        <span class="fa fa-trash icon remove fa-1x"></span>
-                        <span class="no-show">{translate key=Delete}</span>
-                    </a>
+					{if !$reservation->IsDeleted}
+						<a href="#" class="update delete">
+							<span class="fa fa-trash icon remove fa-1x"></span>
+							<span class="no-show">{translate key=Delete}</span>
+						</a>
+					{/if}
 				</td>
 				<td class="action no-edit">
 					<div class="checkbox checkbox-single">
@@ -233,23 +238,6 @@
 			</tr>
 			<tr class="{$rowCss}" data-seriesId="{$reservation->SeriesId}" data-refnum="{$reservation->ReferenceNumber}">
 				<td colspan="{$colCount}">
-					<div class="reservation-list-dates">
-						<div>
-							<label>{translate key='Created'}</label> {formatdate date=$reservation->CreatedDate timezone=$Timezone key=short_datetime}
-						</div>
-						<div>
-							<label>{translate key='LastModified'}</label> {formatdate date=$reservation->ModifiedDate timezone=$Timezone key=short_datetime}
-						</div>
-						<div>
-							<label>{translate key='CheckInTime'}</label> {formatdate date=$reservation->CheckinDate timezone=$Timezone key=short_datetime}
-						</div>
-						<div>
-							<label>{translate key='CheckOutTime'}</label> {formatdate date=$reservation->CheckoutDate timezone=$Timezone key=short_datetime}
-						</div>
-						<div>
-							<label>{translate key='OriginalEndDate'}</label> {formatdate date=$reservation->OriginalEndDate timezone=$Timezone key=short_datetime}
-						</div>
-					</div>
 					{if $ReservationAttributes|default:array()|count > 0}
 						<div class="reservation-list-attributes">
 							{foreach from=$ReservationAttributes item=attribute}
@@ -261,7 +249,6 @@
 							{/foreach}
 						</div>
 					{/if}
-
 				</td>
 			</tr>
 		{/foreach}

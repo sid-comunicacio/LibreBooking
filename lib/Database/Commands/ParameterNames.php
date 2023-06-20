@@ -16,6 +16,7 @@ class ParameterNames
 
     public const ALL_RESOURCES = '@all_resources';
     public const ALL_SCHEDULES = '@all_schedules';
+    public const ALL_STATUSES = '@all_statuses';
     public const All_OWNERS = '@all_owners';
     public const ALL_PARTICIPANTS = '@all_participants';
     public const ALLOW_CALENDAR_SUBSCRIPTION = '@allow_calendar_subscription';
@@ -251,6 +252,10 @@ class ParameterNames
 
     public const VALUE = '@value';
 
+    public const VALIDITY_START = '@validity_start';
+    public const VALIDITY_END = '@validity_end';
+    public const SANCTION_START = '@sanction_start';
+    public const SANCTION_END = '@sanction_end';
 
     // used?
     public const FIRST_NAME_SETTING = '@fname_setting';

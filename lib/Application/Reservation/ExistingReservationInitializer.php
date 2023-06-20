@@ -104,4 +104,9 @@ class ExistingReservationInitializer extends ReservationInitializerBase implemen
     {
         return ServiceLocator::GetServer()->GetUserSession()->Timezone;
     }
+
+    public function GetDateCreated() {
+        return $this->reservationView->DateCreated;
+    }
+        
 }

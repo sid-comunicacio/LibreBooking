@@ -1057,23 +1057,32 @@ input[type="radio"] .styled:checked + label::after {
 .upcomingReservationsDashboard .reservation {
   padding: 3px 0;
   border-bottom: 1px solid #E9E9E9;
+  background-color: #99ffbb;
   margin: 0 3px;
 }
 .upcomingReservationsDashboard .reservation.hover {
   cursor: pointer;
-  background-color: #eaf2f2;
+  background-color: #33ff77;
   color: #222;
 }
 .upcomingReservationsDashboard .reservation.clicked {
   cursor: pointer;
-  background-color: #F0F0F0;
+  background-color: #33ff77;
 }
 .upcomingReservationsDashboard .reservation.pending {
-  background-color: #ffb540;
+  background-color: #ffc973;
 }
 .upcomingReservationsDashboard .reservation.pending.hover,
 .upcomingReservationsDashboard .reservation.pending.clicked {
-  background-color: #ffc973;
+  background-color: #ffb540;
+}
+.upcomingReservationsDashboard .reservation.deleted {
+  background-color: #ff9999;
+}
+.upcomingReservationsDashboard .reservation.deleted.hover,
+.upcomingReservationsDashboard .reservation.deleted.clicked {
+  background-color: #ff9999;
+  color: #BCBCBC;
 }
 .availabilityDashboard .header {
   font-size: 1.2em;
@@ -2088,11 +2097,26 @@ table.list,
   padding: 4px;
 }
 .row0 {
-  background-color: #fff;
+  background-color: #99ffbb;
 }
 .row1 {
-  background-color: #F9F9F9;
+  background-color: #4dff88;
 }
+.row0.sanctioned {
+  background-color: #ff99bb;
+}
+.row1.sanctioned {
+  background-color: #ff4d88;
+}
+.row0.notValid {
+  background-color: #999999;
+}
+.row1.notValid {
+  background-color: #4d4d4d;
+}
+.createDate {
+  display: inline-block;
+}  
 .list th.id,
 .list td.id {
   display: none;
@@ -2110,9 +2134,11 @@ table.list,
   font-weight: normal;
 }
 tr.pending {
-  background-color: #ffb540;
-  background-color: #fffa5f;
+  background-color: #ffc973;
 }
+tr.deleted{
+  background-color: #ff9999;
+}  
 #cboxClose {
   display: none !important;
 }
@@ -2305,7 +2331,9 @@ ul.jqtree-tree .group-resource .jqtree-title {
 #reservationTable {
   width: 100%;
 }
-#reservationTable .user,
+#reservationTable .user{
+  width: 264px;
+}  
 #reservationTable .title {
   width: 110px;
 }

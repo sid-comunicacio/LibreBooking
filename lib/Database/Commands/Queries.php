@@ -61,7 +61,7 @@ class Queries
 
     public const ADJUST_USER_CREDITS =
         'INSERT INTO `credit_log` (`user_id`, `original_credit_count`, `credit_count`, `credit_note`, `date_created`)
-            SELECT `user_id`, `credit_count`, COALESCE(`credit_count`,0) - @credit_count, @credit_note, @dateCreated FROM `users` WHERE `user_id` = @userid;
+            SELECT `user_id`, `credit_count`, COALESCE(`credit_count`,0) - @credit_count, @credit_note, @dateCreated FROM `USERS_VIEW` WHERE `user_id` = @userid;
           UPDATE `users` SET `credit_count` = COALESCE(`credit_count`,0) - @credit_count WHERE `user_id` = @userid';
 
     public const ADD_LAYOUT =
@@ -192,20 +192,20 @@ class Queries
 			SELECT
 				`user_id`, @resourceid as `resource_id`
 			FROM
-				`users` `u`)';
+				`USERS_VIEW` `u`)';
 
     public const AUTO_ASSIGN_CLEAR_RESOURCE_PERMISSIONS = 'DELETE FROM `user_resource_permissions` WHERE `resource_id` = @resourceid';
 
     public const CHECK_EMAIL =
-        'SELECT `user_id` FROM `users` WHERE `email` = @email';
+        'SELECT `user_id` FROM `USERS_VIEW` WHERE `email` = @email';
 
     public const CHECK_USERNAME =
-        'SELECT `user_id` FROM `users` WHERE `username` = @username';
+        'SELECT `user_id` FROM `USERS_VIEW` WHERE `username` = @username';
 
     public const CHECK_USER_EXISTENCE =
         'SELECT *
-		FROM `users`
-		WHERE ( (`username` IS NOT NULL AND `username` = @username) OR (`email` IS NOT NULL AND `email` = @email) )';
+		FROM `USERS_VIEW`
+		WHERE ( (`username` IS NOT NULL AND `username` = @username) )';
 
     public const CLEANUP_USER_SESSIONS =
         'DELETE FROM `user_session` WHERE utc_timestamp()>date_add(`last_modified`,interval 24 hour)';
@@ -308,7 +308,7 @@ class Queries
             VALUES (@userid, @original_credit_count, @credit_count, @credit_note, @dateCreated)';
 
     public const LOGIN_USER =
-        'SELECT * FROM `users` WHERE (`username` = @username OR `email` = @username)';
+        'SELECT * FROM `USERS_VIEW` WHERE (`username` = @username OR `email` = @username)';
 
     public const GET_ACCESSORY_BY_ID = 'SELECT * FROM `accessories` WHERE `accessory_id` = @accessoryid';
 
@@ -351,7 +351,7 @@ class Queries
 			FROM `announcements` `a` ORDER BY `start_date`';
 
     public const GET_ALL_APPLICATION_ADMINS = 'SELECT *
-            FROM `users`
+            FROM `USERS_VIEW`
             WHERE `status_id` = @user_statusid AND
             (`user_id` IN (
                 SELECT `user_id`
@@ -363,7 +363,7 @@ class Queries
               GROUP BY `user_id`';
 
     public const GET_ALL_CREDIT_LOGS = 'SELECT `cl`.*, `u`.`fname`, `u`.`lname`, `u`.`email` FROM `credit_log` `cl`
-            LEFT JOIN `users` `u` ON `cl`.`user_id` = `u`.`user_id`
+            LEFT JOIN `USERS_VIEW` `u` ON `cl`.`user_id` = `u`.`user_id`
             WHERE (@userid = -1 or `cl`.`user_id` = @userid)
             ORDER BY `cl`.`date_created` DESC';
 
@@ -388,7 +388,7 @@ class Queries
         INNER JOIN `resources` `r` ON `grp`.`resource_id` = `r`.`resource_id`';
 
     public const GET_ALL_GROUP_ADMINS =
-        'SELECT `u`.* FROM `users` `u`
+        'SELECT `u`.* FROM `USERS_VIEW` `u`
         INNER JOIN `user_groups` `ug` ON `u`.`user_id` = `ug`.`user_id`
         WHERE `status_id` = @user_statusid AND `ug`.`group_id` IN (
           SELECT `g`.`admin_group_id` FROM `user_groups` `ug`
@@ -398,7 +398,7 @@ class Queries
     public const GET_ALL_GROUP_USERS =
         'SELECT `u`.*, (SELECT GROUP_CONCAT(CONCAT(`cav`.`custom_attribute_id`, \'=\', `cav`.`attribute_value`) SEPARATOR "!sep!")
 			FROM `custom_attribute_values` `cav` WHERE `cav`.`entity_id` = `u`.`user_id` AND `cav`.`attribute_category` = 2) as `attribute_list`
-		FROM `users` `u`
+		FROM `USERS_VIEW` `u`
 		WHERE `u`.`user_id` IN (
 		  SELECT DISTINCT (`ug`.`user_id`) FROM `user_groups` `ug`
 		  INNER JOIN `groups` `g` ON `g`.`group_id` = `ug`.`group_id`
@@ -438,7 +438,7 @@ class Queries
 
     public const GET_ALL_RESOURCE_ADMINS =
         'SELECT *
-        FROM `users`
+        FROM `USERS_VIEW`
         WHERE `status_id` = @user_statusid AND
         `user_id` IN (
             SELECT `user_id`
@@ -461,7 +461,7 @@ class Queries
     public const GET_ALL_TRANSACTION_LOGS = 'SELECT `ptl`.*, `u`.`fname`, `u`.`lname`, `u`.`email`, SUM(`total_refund_amount`) as `refund_amount`
             FROM `payment_transaction_log` `ptl`
             LEFT JOIN `refund_transaction_log` `refunds` on `ptl`.`payment_transaction_log_id` = `refunds`.`payment_transaction_log_id`
-            LEFT JOIN `users` `u` ON `ptl`.`user_id` = `u`.`user_id`
+            LEFT JOIN `USERS_VIEW` `u` ON `ptl`.`user_id` = `u`.`user_id`
             WHERE (@userid = -1 OR `ptl`.`user_id` = @userid)
             GROUP BY `ptl`.`payment_transaction_log_id`
             ORDER BY `date_created` DESC';
@@ -478,7 +478,7 @@ class Queries
 						FROM `custom_attribute_values` `cav` WHERE `cav`.`entity_id` = `u`.`user_id` AND `cav`.`attribute_category` = 2) as attribute_list,
             (SELECT GROUP_CONCAT(`ug`.`group_id` SEPARATOR "!sep!")
                         FROM `user_groups` `ug` WHERE `ug`.`user_id` = `u`.`user_id`) as `group_ids`
-			FROM `users` `u`
+			FROM `USERS_VIEW` `u`
 			WHERE (0 = @user_statusid OR `status_id` = @user_statusid) ORDER BY `lname`, `fname`';
 
     public const GET_ANNOUNCEMENT_BY_ID = 'SELECT `a`.*,
@@ -491,7 +491,7 @@ class Queries
 							FROM `custom_attribute_entities` `e` WHERE `e`.`custom_attribute_id` = `a`.`custom_attribute_id` ORDER BY `e`.`entity_id`) as `entity_ids`,
 				(CASE
 				WHEN `a`.`attribute_category` = 2 THEN (SELECT GROUP_CONCAT(CONCAT(`u`.`fname`, " ", `u`.`lname`) SEPARATOR "!sep!")
-													FROM `users` `u` INNER JOIN `custom_attribute_entities` `e`
+													FROM `USERS_VIEW` `u` INNER JOIN `custom_attribute_entities` `e`
 													WHERE `e`.`custom_attribute_id` = `a`.`custom_attribute_id` AND `u`.`user_id` = `e`.`entity_id` ORDER BY `e`.`entity_id`)
 				WHEN `a`.`attribute_category` = 4 THEN (SELECT GROUP_CONCAT(`r`.`name` SEPARATOR "!sep!")
 													FROM `resources` `r` INNER JOIN `custom_attribute_entities` `e`
@@ -529,7 +529,7 @@ class Queries
 		INNER JOIN `blackout_series` `bs` ON `bi`.`blackout_series_id` = `bs`.`blackout_series_id`
 		INNER JOIN `blackout_series_resources` `bsr` ON  `bi`.`blackout_series_id` = `bsr`.`blackout_series_id`
 		INNER JOIN `resources` `r` on `bsr`.`resource_id` = `r`.`resource_id`
-		INNER JOIN `users` `u` ON `u`.`user_id` = `bs`.`owner_id`
+		INNER JOIN `USERS_VIEW` `u` ON `u`.`user_id` = `bs`.`owner_id`
 		WHERE
 			(
 				(`bi`.`start_date` >= @startDate AND `bi`.`start_date` <= @endDate)
@@ -548,7 +548,7 @@ class Queries
 					INNER JOIN `blackout_series_resources` `bsr` ON  `bi`.`blackout_series_id` = `bsr`.`blackout_series_id`
 					INNER JOIN `resources` `r` on `bsr`.`resource_id` = `r`.`resource_id`
 					INNER JOIN `schedules` on `r`.`schedule_id` = `schedules`.`schedule_id`
-					INNER JOIN `users` `u` ON `u`.`user_id` = `bs`.`owner_id`
+					INNER JOIN `USERS_VIEW` `u` ON `u`.`user_id` = `bs`.`owner_id`
 		ORDER BY `bi`.`start_date` ASC';
 
     public const GET_BLACKOUT_INSTANCES = 'SELECT * FROM `blackout_instances` WHERE `blackout_series_id` = @blackout_series_id';
@@ -612,7 +612,7 @@ class Queries
 		FROM `reservation_instances` `ri`
 		INNER JOIN `reservation_series` `rs` ON `ri`.`series_id` = `rs`.`series_id`
 		INNER JOIN `reservation_reminders` `rr` on `ri`.`series_id` = `rr`.`series_id` INNER JOIN `reservation_users` `ru` on `ru`.`reservation_instance_id` = `ri`.`reservation_instance_id`
-		INNER JOIN `users` `u` on `ru`.`user_id` = `u`.`user_id`
+		INNER JOIN `USERS_VIEW` `u` on `ru`.`user_id` = `u`.`user_id`
 		WHERE `rs`.`status_id` <> 2 AND (`reminder_type` = @reminder_type AND @reminder_type=0 AND date_sub(`start_date`,INTERVAL `rr`.`minutes_prior` MINUTE) = @current_date) OR (`reminder_type` = @reminder_type AND @reminder_type=1 AND date_sub(`end_date`,INTERVAL `rr`.`minutes_prior` MINUTE) = @current_date)';
 
     public const GET_REMINDERS_BY_USER = 'SELECT * FROM `reminders` WHERE `user_id` = @user_id';
@@ -678,7 +678,7 @@ class Queries
         'SELECT `ri`.*, `rs`.*, `rr`.*, `u`.`user_id`, `u`.`fname`, `u`.`lname`, `u`.`email`, `u`.`phone`, `r`.`schedule_id`, `r`.`name`, `rs`.`status_id` as `status_id`
 		FROM `reservation_instances` `ri`
 		INNER JOIN `reservation_series` `rs` ON `rs`.`series_id` = `ri`.`series_id`
-		INNER JOIN `users` `u` ON `u`.`user_id` = `rs`.`owner_id`
+		INNER JOIN `USERS_VIEW` `u` ON `u`.`user_id` = `rs`.`owner_id`
 		INNER JOIN `reservation_resources` `rr` ON `rs`.`series_id` = `rr`.`series_id` AND `rr`.`resource_level_id` = @resourceLevelId
 		INNER JOIN `resources` `r` ON `r`.`resource_id` = `rr`.`resource_id`
 		WHERE
@@ -691,8 +691,8 @@ class Queries
 			FROM `reservation_instances` `ri`
 			INNER JOIN `reservation_series` `rs` ON `rs`.`series_id` = `ri`.`series_id`
 			INNER JOIN `reservation_users` `ru` ON `ru`.`reservation_instance_id` = `ri`.`reservation_instance_id`
-			INNER JOIN `users` ON `users`.`user_id` = `rs`.`owner_id`
-			INNER JOIN `users` AS `owner` ON `owner`.`user_id` = `rs`.`owner_id`
+			INNER JOIN `USERS_VIEW` AS `users` ON `users`.`user_id` = `rs`.`owner_id`
+			INNER JOIN `USERS_VIEW` AS `owner` ON `owner`.`user_id` = `rs`.`owner_id`
 			INNER JOIN `reservation_resources` `rr` ON `rs`.`series_id` = `rr`.`series_id`
 			INNER JOIN `resources` ON `rr`.`resource_id` = `resources`.`resource_id`
 			INNER JOIN `schedules` ON `resources`.`schedule_id` = `schedules`.`schedule_id`
@@ -733,7 +733,7 @@ class Queries
 			`u`.`email`,
 			`ru`.*
 		FROM `reservation_users` `ru`
-		INNER JOIN `users` `u` ON `ru`.`user_id` = `u`.`user_id`
+		INNER JOIN `USERS_VIEW` `u` ON `ru`.`user_id` = `u`.`user_id`
 		WHERE `reservation_instance_id` = @reservationid';
 
     public const GET_RESERVATION_REMINDERS = 'SELECT * FROM `reservation_reminders` WHERE `series_id` = @seriesid';
@@ -823,14 +823,14 @@ class Queries
 
     public const GET_USERID_BY_ACTIVATION_CODE =
         'SELECT `a`.`user_id` FROM `account_activation` `a`
-			INNER JOIN `users` `u` ON `u`.`user_id` = `a`.`user_id`
+			INNER JOIN `USERS_VIEW` `u` ON `u`.`user_id` = `a`.`user_id`
 			WHERE `activation_code` = @activation_code AND `u`.`status_id` = @statusid';
 
-    public const GET_USER_BY_ID = 'SELECT * FROM `users` WHERE `user_id` = @userid';
+    public const GET_USER_BY_ID = 'SELECT * FROM `USERS_VIEW` WHERE `user_id` = @userid';
 
-    public const GET_USER_BY_PUBLIC_ID = 'SELECT * FROM `users` WHERE `public_id` = @publicid';
+    public const GET_USER_BY_PUBLIC_ID = 'SELECT * FROM `USERS_VIEW` WHERE `public_id` = @publicid';
 
-    public const GET_USER_COUNT = 'SELECT COUNT(*) as `count` FROM `users`';
+    public const GET_USER_COUNT = 'SELECT COUNT(*) as `count` FROM `USERS_VIEW`';
 
     public const GET_USER_EMAIL_PREFERENCES = 'SELECT * FROM `user_email_preferences` WHERE `user_id` = @userid';
 
@@ -899,18 +899,18 @@ class Queries
     public const GET_RESOURCE_USER_PERMISSION = 'SELECT
 				`u`.*, `urp`.`permission_type`
 			FROM
-				`user_resource_permissions` `urp`, `resources` `r`, `users` `u`
+				`user_resource_permissions` `urp`, `resources` `r`, `USERS_VIEW` `u`
 			WHERE
 				`r`.`resource_id` = @resourceid AND `r`.`resource_id` = `urp`.`resource_id` AND `u`.`user_id` = `urp`.`user_id` AND `u`.`status_id` = @user_statusid';
 
     public const GET_RESOURCE_USER_GROUP_PERMISSION = 'SELECT `u`.*, `urp`.`permission_type`
 			FROM
-				`user_resource_permissions` `urp`, `resources` `r`, `users` `u`
+				`user_resource_permissions` `urp`, `resources` `r`, `USERS_VIEW` `u`
 			WHERE
 				`r`.`resource_id` = @resourceid AND `r`.`resource_id` = `urp`.`resource_id` AND `u`.`user_id` = `urp`.`user_id` AND `u`.`status_id` = @user_statusid
 		UNION
 			SELECT `u`.*, `grp`.`permission_type`
-			FROM `users` `u`
+			FROM `USERS_VIEW` `u`
 			INNER JOIN `user_groups` `ug` on `u`.`user_id` = `ug`.`user_id`
 			INNER JOIN `group_resource_permissions` `grp` on `ug`.`group_id` = `grp`.`group_id`
 			WHERE `ug`.`group_id` IN (
@@ -1163,6 +1163,17 @@ class Queries
 		WHERE
 			`user_id` = @userid';
 
+	public const UPDATE_USER_VALIDITY_SANCTION =
+		'UPDATE productors
+			SET
+			sanction_start = @sanction_start,
+			sanction_end = @sanction_end,
+			validity_start = @validity_start,			
+			validity_end = @validity_end
+		WHERE
+			username = (SELECT username FROM users WHERE user_id=@userid)';
+
+
     public const UPDATE_USER_ATTRIBUTES =
         'UPDATE	`users`
 		SET
@@ -1186,6 +1197,10 @@ class Queries
 		WHERE
 			`username` = @username OR `email` = @email';
 
+	public const MERGE_PRODUCTOR =
+		'INSERT INTO productors (username, validity_start, validity_end) VALUES (@username, @validity_start, @validity_end)
+			ON DUPLICATE KEY UPDATE validity_start=@validity_start, validity_end=@validity_end';
+
     public const UPDATE_USER_PREFERENCE = 'UPDATE `user_preferences` SET `value` = @value WHERE `user_id` = @userid AND `name` = @name';
 
     public const UPDATE_USER_SESSION =
@@ -1208,7 +1223,7 @@ class QueryBuilder
 					(`ri`.`start_date` <= @startDate AND `ri`.`end_date` >= @endDate))';
 
     public static $SELECT_LIST_FRAGMENT = '`ri`.*, `rs`.`date_created` as `date_created`, `rs`.`last_modified` as `last_modified`, `rs`.`description` as `description`, `rs`.`status_id` as `status_id`, `rs`.`title`, `rs`.`repeat_type`, `rs`.`repeat_options`,
-					`owner`.`fname` as `owner_fname`, `owner`.`lname` as `owner_lname`, `owner`.`user_id` as `owner_id`, `owner`.`phone` as `owner_phone`, `owner`.`position` as `owner_position`, `owner`.`organization` as `owner_organization`, `owner`.`email` as `email`, `owner`.`language`, `owner`.`timezone`,
+					`owner`.`fname` as `owner_fname`, `owner`.`lname` as `owner_lname`, `owner`.`user_id` as `owner_id`, `owner`.`username` as `owner_username`, `owner`.`phone` as `owner_phone`, `owner`.`position` as `owner_position`, `owner`.`organization` as `owner_organization`, `owner`.`email` as `email`, `owner`.`language`, `owner`.`timezone`,
 					`resources`.`name`, `resources`.`resource_id`, `resources`.`schedule_id`, `resources`.`status_id` as `resource_status_id`, `resources`.`resource_status_reason_id`, `resources`.`buffer_time`, `resources`.`color`, `resources`.`enable_check_in`, `resources`.`auto_release_minutes`, `resources`.`admin_group_id` as `resource_admin_group_id`,
 					`ru`.`reservation_user_level`, `schedules`.`admin_group_id` as `schedule_admin_group_id`,
 					`start_reminder`.`minutes_prior` AS `start_reminder_minutes`, `end_reminder`.`minutes_prior` AS `end_reminder_minutes`,
@@ -1216,10 +1231,10 @@ class QueryBuilder
 						FROM `user_groups` `groups` WHERE `owner`.`user_id` = `groups`.`user_id`) as `owner_group_list`,
 
 					(SELECT GROUP_CONCAT(CONCAT(`participants`.`user_id`, \'=\', CONCAT(`participant_users`.`fname`, " ", `participant_users`.`lname`)) SEPARATOR "!sep!")
-						FROM `reservation_users` `participants` INNER JOIN `users` `participant_users` ON `participants`.`user_id` = `participant_users`.`user_id` WHERE `participants`.`reservation_instance_id` = `ri`.`reservation_instance_id` AND `participants`.`reservation_user_level` = 2) as `participant_list`,
+						FROM `reservation_users` `participants` INNER JOIN `USERS_VIEW` `participant_users` ON `participants`.`user_id` = `participant_users`.`user_id` WHERE `participants`.`reservation_instance_id` = `ri`.`reservation_instance_id` AND `participants`.`reservation_user_level` = 2) as `participant_list`,
 
 					(SELECT GROUP_CONCAT(CONCAT(`invitees`.`user_id`, \'=\', CONCAT(`invitee_users`.`fname`, " ", `invitee_users`.`lname`)) SEPARATOR "!sep!")
-						FROM `reservation_users` `invitees` INNER JOIN `users` `invitee_users` ON `invitees`.`user_id` = `invitee_users`.`user_id` WHERE `invitees`.`reservation_instance_id` = `ri`.`reservation_instance_id` AND `invitees`.`reservation_user_level` = 3) as `invitee_list`,
+						FROM `reservation_users` `invitees` INNER JOIN `USERS_VIEW` `invitee_users` ON `invitees`.`user_id` = `invitee_users`.`user_id` WHERE `invitees`.`reservation_instance_id` = `ri`.`reservation_instance_id` AND `invitees`.`reservation_user_level` = 3) as `invitee_list`,
 
 					(SELECT GROUP_CONCAT(CONCAT(`cav`.`custom_attribute_id`,\'=\', `cav`.`attribute_value`) SEPARATOR "!sep!")
 						FROM `custom_attribute_values` `cav` WHERE `cav`.`entity_id` = `ri`.`series_id` AND `cav`.`attribute_category` = 1) as `attribute_list`,

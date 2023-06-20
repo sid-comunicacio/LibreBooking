@@ -11,7 +11,7 @@ class TableNames
     public const RESOURCES_ALIAS = 'r';
     public const SCHEDULES = 'schedules';
     public const SCHEDULES_ALIAS = 's';
-    public const USERS = 'users';
+    public const USERS = 'USERS_VIEW';
     public const USERS_ALIAS = 'u';
     public const RESERVATION_INSTANCES_ALIAS = 'ri';
     public const BLACKOUT_INSTANCES_ALIAS = 'bi';

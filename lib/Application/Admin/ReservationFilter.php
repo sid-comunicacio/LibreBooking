@@ -72,6 +72,14 @@ class ReservationFilter
      * @var bool
      */
     private $missedCheckout = false;
+    /**
+     * @var null|string
+     */
+    private $userName;
+    /**
+     * @var null|string
+     */
+    private $authorizedNIU;
 
     /**
      * @param Date $startDate
@@ -88,6 +96,8 @@ class ReservationFilter
      * @param string $description
      * @param bool $missedCheckin
      * @param bool $missedCheckout
+     * @param string $userName
+     * @param string $authorizedNIU
      */
     public function __construct(
         $startDate = null,
@@ -103,7 +113,9 @@ class ReservationFilter
         $title = null,
         $description = null,
         $missedCheckin = false,
-        $missedCheckout = false
+        $missedCheckout = false,
+        $userName = null,
+        $authorizedNIU = null
     ) {
         $this->startDate = $startDate;
         $this->endDate = $endDate;
@@ -119,6 +131,8 @@ class ReservationFilter
         $this->description = $description;
         $this->missedCheckin = $missedCheckin;
         $this->missedCheckout = $missedCheckout;
+        $this->userName = $userName;
+        $this->authorizedNIU = $authorizedNIU;
     }
 
     /**
@@ -128,6 +142,16 @@ class ReservationFilter
     public function _And(ISqlFilter $filter)
     {
         $this->_and[] = $filter;
+        return $this;
+    }
+
+    /**
+     * @param ISqlFilter $filter
+     * @return ReservationFilter
+     */
+    public function _Or(ISqlFilter $filter)
+    {
+        $this->_or[] = $filter;
         return $this;
     }
 
@@ -191,6 +215,19 @@ class ReservationFilter
         }
         if (!empty($this->description)) {
             $filter->_And(new SqlFilterLike(new SqlFilterColumn(TableNames::RESERVATION_SERIES_ALIAS, ColumnNames::RESERVATION_DESCRIPTION), $this->description));
+        }
+        if (!empty($this->userName)) {
+            if (!empty($this->authorizedNIU)) {
+                $attributeFilter = AttributeFilter::Create(TableNames::RESERVATION_SERIES_ALIAS . '.' . ColumnNames::SERIES_ID, $this->authorizedNIU);
+                if ($attributeFilter != null) {
+                    $userFilter = new SqlFilterNull(true);
+                    $userFilter->_Or($attributeFilter);
+                    $userFilter->_Or(new SqlFilterEquals(new SqlFilterColumn(TableNames::USERS, ColumnNames::USERNAME), $this->userName));
+                    $filter->_And($userFilter);
+                }
+            } else {
+                $filter->_And(new SqlFilterEquals(new SqlFilterColumn(TableNames::USERS, ColumnNames::USERNAME), $this->userName));
+            }
         }
         $requiresCheckIn = new SqlFilterEquals(new SqlFilterColumn(TableNames::RESOURCES, ColumnNames::ENABLE_CHECK_IN), 1);
         if ($this->missedCheckin) {

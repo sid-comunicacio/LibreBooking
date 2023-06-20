@@ -121,6 +121,7 @@ class AutoCompletePage extends Page
         if (!empty($groupIds)) {
             $userFilter = new SqlFilterLike(ColumnNames::FIRST_NAME, $term);
             $userFilter->_Or(new SqlFilterLike(ColumnNames::LAST_NAME, $term));
+            $userFilter->_Or(new SqlFilterLike(ColumnNames::USERNAME, $term));
 
             $groupRepo = new GroupRepository();
             $results = $groupRepo->GetUsersInGroup($groupIds, null, null, $userFilter)->Results();
@@ -187,7 +188,7 @@ class AutocompleteUser
         $this->Name = $full->__toString();
         $this->Email = $email;
         $this->UserName = $userName;
-        $this->DisplayName = "{$full} ($email)";
+        $this->DisplayName = "{$userName} - {$full} ($email)";
         $this->CurrentCreditCount = floatval($currentCreditCount);
     }
 }

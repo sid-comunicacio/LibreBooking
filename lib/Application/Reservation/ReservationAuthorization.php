@@ -44,7 +44,7 @@ class ReservationAuthorization implements IReservationAuthorization
 
     public function CanEdit(ReservationView $reservationView, UserSession $currentUser)
     {
-        if ($currentUser->IsAdmin) {
+        if ($currentUser->IsAdmin || $currentUser->IsResourceAdmin) {
             return true;
         }
 

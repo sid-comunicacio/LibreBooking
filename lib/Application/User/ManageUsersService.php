@@ -39,11 +39,13 @@ interface IManageUsersService
      * @param $firstName string
      * @param $lastName string
      * @param $timezone string
+     * @param $validityStart Date
+     * @param $validityEnd Date
      * @param $extraAttributes string[]|array
      * @param $customAttributes AttributeValue[]
      * @return User
      */
-    public function UpdateUser($userId, $username, $email, $firstName, $lastName, $timezone, $extraAttributes, $customAttributes);
+    public function UpdateUser($userId, $username, $email, $firstName, $lastName, $timezone, $validityStart, $validityEnd, $extraAttributes, $customAttributes);
 
     /**
      * @param $userId int
@@ -79,6 +81,14 @@ interface IManageUsersService
      * @return User
      */
     public function LoadUser($email);
+
+	/**
+     * @param string $niu
+	 * @param Date $validityStart
+	 * @param Date $validityEnd
+     */
+	public function SaveOrUpdateProductor($niu, $validityStart, $validityEnd); 
+
 }
 
 class ManageUsersService implements IManageUsersService
@@ -191,7 +201,7 @@ class ManageUsersService implements IManageUsersService
         }
     }
 
-    public function UpdateUser($userId, $username, $email, $firstName, $lastName, $timezone, $extraAttributes, $customAttributes)
+    public function UpdateUser($userId, $username, $email, $firstName, $lastName, $timezone, $validityStart, $validityEnd, $extraAttributes)
     {
         $attributes = new UserAttribute($extraAttributes);
         $user = $this->userRepository->LoadById($userId);
@@ -208,6 +218,8 @@ class ManageUsersService implements IManageUsersService
         foreach ($customAttributes as $attribute) {
             $user->ChangeCustomAttribute($attribute);
         }
+        $user->ChangeValidity($validityStart, $validityEnd);
+
         $this->userRepository->Update($user);
 
         return $user;
@@ -258,4 +270,9 @@ class ManageUsersService implements IManageUsersService
     {
         return $this->userRepository->LoadByUsername($email);
     }
+
+    public function SaveOrUpdateProductor($niu, $validityStart, $validityEnd) {
+        $this->userRepository->SaveOrUpdateProductor($niu, $validityStart, $validityEnd);
+    }
+        
 }

@@ -179,6 +179,16 @@ class ScheduleWebServiceView implements ISchedulePage
     private $dailyLayout;
 
     /**
+	 * @var bool
+	 */
+	private $isUserValid;
+
+	/**
+	 * @var bool
+	 */
+	private $isUserSanctioned;
+
+    /**
      * @var bool
      */
     private $isPermissionError;
@@ -405,6 +415,20 @@ class ScheduleWebServiceView implements ISchedulePage
         $this->isPermissionError = $shouldShow;
     }
 
+    /**
+     * @param bool $isUserSanctioned
+     */
+    public function ShowUserSanctioned($isUserSanctioned) {
+        $this->isUserSanctioned = $isUserSanctioned;
+    }
+
+    /**
+     * @param bool $isUserValid
+     */
+    public function ShowUserValid($isUserValid) {
+        $this->isUserValid = $isUserValid;
+    }
+
     public function GetDisplayTimezone(UserSession $user, Schedule $schedule)
     {
         return $user->Timezone;
@@ -480,6 +504,22 @@ class ScheduleWebServiceView implements ISchedulePage
     {
         return $this->isPermissionError;
     }
+
+    /**
+	 * @return boolean
+	 */
+	public function IsUserSanctioned()
+	{
+		return $this->isUserSanctioned;
+	}
+
+	/**
+	 * @return boolean
+	 */
+	public function IsUserValid()
+	{
+		return $this->isUserValid;
+	}
 
     /**
      * @return DateRange

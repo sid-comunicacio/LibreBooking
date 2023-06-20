@@ -327,7 +327,7 @@ ul.jqtree-tree .group-resource .jqtree-title {
 }
 #reservationTable .user,
 #reservationTable .title {
-  width: 110px;
+  width: 400px;
 }
 #reservationTable .resource {
   max-width: 150px;
@@ -344,6 +344,9 @@ ul.jqtree-tree .group-resource .jqtree-title {
 #reservationTable tr.editable td {
   cursor: pointer;
 }
+#reservationTable th td {
+  width: 600px;
+}  
 .table .icon,
 #list-quotas-panel .icon {
   font-size: 1.4em;

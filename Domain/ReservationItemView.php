@@ -211,6 +211,11 @@ class ReservationItemView implements IReservedItemView
     public $RequiresApproval;
 
     /**
+	 * @var null|bool
+	 */
+	public $IsDeleted;
+
+    /**
      * @var string|RepeatType
      */
     public $RepeatType;
@@ -580,6 +585,7 @@ class ReservationItemView implements IReservedItemView
 
         if (isset($row[ColumnNames::RESERVATION_STATUS])) {
             $view->RequiresApproval = $row[ColumnNames::RESERVATION_STATUS] == ReservationStatus::Pending;
+            $view->IsDeleted = $row[ColumnNames::RESERVATION_STATUS] == ReservationStatus::Deleted;
         }
 
         if (isset($row[ColumnNames::EMAIL])) {

@@ -81,11 +81,11 @@ class ResourceGroupTree
      */
     public function GetGroups($includeDefaultGroup = true)
     {
-        if ($includeDefaultGroup) {
-            return $this->groups;
-        } else {
+        // if ($includeDefaultGroup) {
+        //     return $this->groups;
+        // } else {
             return array_slice($this->groups, 1);
-        }
+        // }
     }
 
     /**
@@ -94,11 +94,11 @@ class ResourceGroupTree
      */
     public function GetGroupList($includeDefaultGroup = true)
     {
-        if ($includeDefaultGroup) {
-            return $this->references;
-        } else {
+        // if ($includeDefaultGroup) {
+        //     return $this->references;
+        // } else {
             return array_slice($this->references, 1, null, true);
-        }
+        // }
     }
 
     /**

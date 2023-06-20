@@ -172,6 +172,28 @@ interface IManageUsersPage extends IPageable, IActionPage
      * @param CustomAttribute[] $attributes
      */
     public function ShowUserUpdate(User $user, $attributes);
+
+    public function GetSanctionStart();
+    public function GetSanctionEnd();
+    public function SetSanctionStart($date);
+    public function SetSanctionEnd($date);
+
+    public function GetValidityStart();
+    public function GetValidityEnd();
+    public function SetValidityStart($date);
+    public function SetValidityEnd($date);
+
+    public function GetProductorsList();
+    public function GetNewValidityStart();
+    public function GetNewValidityEnd();
+    public function SetNewValidityStart($date);
+    public function SetNewValidityEnd($date);
+    public function GetUpdateProductorOnImport();
+    /**
+     * @param ProductorImportResult $importResult
+     */
+    public function SetImportProductorResult($importResult);
+
 }
 
 class ManageUsersPage extends ActionPage implements IManageUsersPage
@@ -208,7 +230,9 @@ class ManageUsersPage extends ActionPage implements IManageUsersPage
 
     public function ProcessPageLoad()
     {
-        $this->_presenter->PageLoad();
+        $userTimezone = $this->server->GetUserSession()->Timezone;
+        $this->Set('Timezone', $userTimezone);
+        $this->_presenter->PageLoad($userTimezone);
 
         $config = Configuration::Instance();
 
@@ -460,6 +484,104 @@ class ManageUsersPage extends ActionPage implements IManageUsersPage
     {
         return $this->GetCheckbox(FormKeys::UPDATE_ON_IMPORT);
     }
+
+	public function GetNewValidityStart()
+    {
+        return $this->GetForm(FormKeys::NEW_VALIDITY_START);
+    }
+
+	public function GetNewValidityEnd()
+    {
+        return $this->GetForm(FormKeys::NEW_VALIDITY_END);
+    }
+
+	/**
+	 * @param Date $date
+	 * @return void
+	 */
+	public function SetNewValidityStart($date)
+	{
+		$this->Set('NewValidityStart', $date);
+	}
+
+	/**
+	 * @param Date $date
+	 * @return void
+	 */
+	public function SetNewValidityEnd($date)
+	{
+		$this->Set('NewValidityEnd', $date);
+	}
+
+	public function GetUpdateProductorOnImport()
+    {
+        return $this->GetCheckbox(FormKeys::UPDATE_PRODUCTOR_ON_IMPORT);
+    }
+
+	public function GetProductorsList() {
+		return $this->GetForm(FormKeys::PRODUCTORS_LIST);
+	}
+
+	public function SetImportProductorResult($importResult)
+	{
+		$this->SetJsonResponse($importResult);
+	}
+
+	public function GetSanctionStart()
+    {
+        return $this->GetForm(FormKeys::SANCTION_START);
+    }
+
+	public function GetSanctionEnd()
+    {
+        return $this->GetForm(FormKeys::SANCTION_END);
+    }
+
+	/**
+	 * @param Date $date
+	 * @return void
+	 */
+	public function SetSanctionStart($date)
+	{
+		$this->Set('SanctionStart', $date);
+	}
+
+	/**
+	 * @param Date $date
+	 * @return void
+	 */
+	public function SetSanctionEnd($date)
+	{
+		$this->Set('SanctionEnd', $date);
+	}
+
+	public function GetValidityStart()
+    {
+        return $this->GetForm(FormKeys::VALIDITY_START);
+    }
+
+	public function GetValidityEnd()
+    {
+        return $this->GetForm(FormKeys::VALIDITY_END);
+    }
+
+	/**
+	 * @param Date $date
+	 * @return void
+	 */
+	public function SetValidityStart($date)
+	{
+		$this->Set('ValidityStart', $date);
+	}
+
+	/**
+	 * @param Date $date
+	 * @return void
+	 */
+	public function SetValidityEnd($date)
+	{
+		$this->Set('ValidityEnd', $date);
+	}
 
     public function ShowUserUpdate(User $user, $attributes)
     {

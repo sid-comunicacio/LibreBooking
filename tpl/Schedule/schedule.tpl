@@ -221,6 +221,14 @@
             </div>
         {/if}
 
+        {if isset($AllowConcurrentReservations) && $AllowConcurrentReservations}
+            <div class="alert alert-warning center">
+                <strong>
+                    <a href="{Pages::CALENDAR}?sid={$ScheduleId}">{format_date date=$ScheduleAvailabilityStart timezone=$timezone}{translate key=OnlyViewedCalendar}</a>
+                </strong>
+            </div>
+        {/if}
+
         {if !isset($HideSchedule) || !$HideSchedule}
             {block name="legend"}
                 <div class="hidden-xs row col-sm-12 schedule-legend">
@@ -230,7 +238,6 @@
                         <div class="legend reserved">{translate key=Reserved}</div>
                         {if $LoggedIn}
                             <div class="legend reserved mine">{translate key=MyReservation}</div>
-                            <div class="legend reserved participating">{translate key=Participant}</div>
                         {/if}
                         <div class="legend reserved pending">{translate key=Pending}</div>
                         <div class="legend pasttime">{translate key=Past}</div>
@@ -241,22 +248,14 @@
             <div class="row">
                 <div id="reservations-left" class="col-md-2 col-sm-12 default-box">
                     <div class="reservations-left-header">{translate key=Filter}
-                        <a href="#" class="pull-right toggle-sidebar" title="Hide Reservation Filter"><i
+                        <a href="#" class="pull-right toggle-sidebar" title="{translate key=HideReservationFilter}"><i
                                     class="glyphicon glyphicon-remove"></i>
-                            <span class="no-show">Hide Reservation Filter</span>
+                            <span class="no-show">{translate key=HideReservationFilter}</span>
                         </a>
                     </div>
 
                     <div class="reservations-left-content">
                         <form method="get" role="form" id="advancedFilter">
-
-                            {if count($ResourceAttributes) + count($ResourceTypeAttributes) > 5}
-                                <div>
-                                    <input type="submit" value="{translate key=Filter}"
-                                           class="btn btn-success btn-sm" {formname key=SUBMIT}/>
-                                </div>
-                            {/if}
-
                             <div>
                                 {*<label>{translate key=Resource}</label>*}
                                 <div id="resourceGroups"></div>
@@ -281,29 +280,6 @@
                                         </div>
                                     {/if}
                                 {/if}
-                                <div class="form-group col-xs-12">
-                                    <label for="maxCapactiy">{translate key=MinimumCapacity}</label>
-                                    <input type='number' min='0' id='maxCapactiy' size='5' maxlength='5'
-                                           class="form-control input-sm" {formname key=MAX_PARTICIPANTS}
-                                           value="{$MaxParticipantsFilter}"/>
-                                </div>
-
-                                <div class="form-group col-xs-12">
-                                    <label for="resourceType">{translate key=ResourceType}</label>
-                                    <select id="resourceType" {formname key=RESOURCE_TYPE_ID} {formname key=RESOURCE_TYPE_ID}
-                                            class="form-control input-sm">
-                                        <option value="">- {translate key=All} -</option>
-                                        {object_html_options options=$ResourceTypes label='Name' key='Id' selected=$ResourceTypeIdFilter}
-                                    </select>
-                                </div>
-
-                                {foreach from=$ResourceAttributes item=attribute}
-                                    {control type="AttributeControl" attribute=$attribute align='vertical' searchmode=true namePrefix='r' inputClass="input-sm" class="customAttribute col-xs-12"}
-                                {/foreach}
-
-                                {foreach from=$ResourceTypeAttributes item=attribute}
-                                    {control type="AttributeControl" attribute=$attribute align='vertical' searchmode=true namePrefix='rt' inputClass="input-sm" class="customAttribute col-xs-12"}
-                                {/foreach}
 
                                 <div class="btn-submit">
                                     <button type="submit" class="btn btn-success btn-sm"

@@ -18,6 +18,7 @@ require_once(ROOT_DIR . 'lib/Application/Reservation/Validation/ReservationDateT
 require_once(ROOT_DIR . 'lib/Application/Reservation/Validation/ReservationOverlappingRule.php');
 require_once(ROOT_DIR . 'lib/Application/Reservation/Validation/ReservationStartTimeRule.php');
 require_once(ROOT_DIR . 'lib/Application/Reservation/Validation/PermissionValidationRule.php');
+require_once(ROOT_DIR . 'lib/Application/Reservation/Validation/ProductorValidationRule.php');
 require_once(ROOT_DIR . 'lib/Application/Reservation/Validation/ReservationRuleResult.php');
 require_once(ROOT_DIR . 'lib/Application/Reservation/Validation/ReservationValidationFactory.php');
 require_once(ROOT_DIR . 'lib/Application/Reservation/Validation/ReservationValidationResult.php');

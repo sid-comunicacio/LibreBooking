@@ -1754,8 +1754,32 @@ class GetReservationListCommand extends SqlCommand
         $this->AddParameter(new Parameter(ParameterNames::PARTICIPANT_ID, $participantIds));
         $this->AddParameter(new Parameter(ParameterNames::ALL_RESOURCES, (int)empty($resourceIds)));
         $this->AddParameter(new Parameter(ParameterNames::ALL_SCHEDULES, (int)empty($scheduleIds)));
+        $this->AddParameter(new Parameter(ParameterNames::ALL_STATUSES, 1));
         $this->AddParameter(new Parameter(ParameterNames::All_OWNERS, (int)empty($userIds)));
         $this->AddParameter(new Parameter(ParameterNames::ALL_PARTICIPANTS, (int)empty($participantIds)));
+    }
+
+    public function ContainsGroupConcat()
+    {
+        return true;
+    }
+}
+
+class GetReservationListWithoutCancelledCommand extends SqlCommand
+{
+    public function __construct(Date $startDate, Date $endDate, $userId, $userLevelId, $scheduleIds, $resourceIds)
+    {
+        parent::__construct(QueryBuilder::GET_RESERVATION_LIST());
+        $this->AddParameter(new Parameter(ParameterNames::START_DATE, $startDate->ToDatabase()));
+        $this->AddParameter(new Parameter(ParameterNames::END_DATE, $endDate->ToDatabase()));
+        $this->AddParameter(new Parameter(ParameterNames::USER_ID, $userId));
+        $this->AddParameter(new Parameter(ParameterNames::RESERVATION_USER_LEVEL_ID, $userLevelId));
+        $this->AddParameter(new Parameter(ParameterNames::SCHEDULE_ID, $scheduleIds));
+        $this->AddParameter(new Parameter(ParameterNames::RESOURCE_ID, $resourceIds));
+        $this->AddParameter(new Parameter(ParameterNames::ALL_RESOURCES, (int)empty($resourceIds)));
+        $this->AddParameter(new Parameter(ParameterNames::ALL_SCHEDULES, (int)empty($scheduleIds)));
+        $statuses = array(1, 3);
+        $this->AddParameter(new Parameter(ParameterNames::STATUS_ID, $statuses));
     }
 
     public function ContainsGroupConcat()
@@ -2891,3 +2915,34 @@ class UpdateUserSessionCommand extends SqlCommand
         $this->AddParameter(new Parameter(ParameterNames::USER_SESSION, $serializedSession));
     }
 }
+
+class UpdateUserValiditySanctionCommand extends SqlCommand
+{
+    public function __construct(
+        $userId,
+        $validityStart,
+        $validityEnd,
+        $sanctionStart,
+        $sanctionEnd
+        )
+    {
+        parent::__construct(Queries::UPDATE_USER_VALIDITY_SANCTION);
+        $this->AddParameter(new Parameter(ParameterNames::USER_ID, $userId));
+        $this->AddParameter(new Parameter(ParameterNames::VALIDITY_START, $validityStart));
+        $this->AddParameter(new Parameter(ParameterNames::VALIDITY_END, $validityEnd));
+        $this->AddParameter(new Parameter(ParameterNames::SANCTION_START, $sanctionStart));
+        $this->AddParameter(new Parameter(ParameterNames::SANCTION_END, $sanctionEnd));
+    }
+ }
+
+class SaveOrUpdateProductorCommand extends SqlCommand
+{
+    public function __construct($niu, $validityStart, $validityEnd)
+    {
+        parent::__construct(Queries::MERGE_PRODUCTOR);
+        $this->AddParameter(new Parameter(ParameterNames::USERNAME, $niu));
+        $this->AddParameter(new Parameter(ParameterNames::VALIDITY_START, $validityStart));
+        $this->AddParameter(new Parameter(ParameterNames::VALIDITY_END, $validityEnd));
+    }
+}
+

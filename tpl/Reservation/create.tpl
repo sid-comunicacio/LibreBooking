@@ -110,6 +110,8 @@
                         </div>
                     </div>
 
+                    {block name="createDate"}{/block}
+
                     <div class="col-xs-12 reservationDates">
                         <div class="col-md-6 no-padding-left">
                             <div class="form-group no-margin-bottom">
@@ -188,7 +190,7 @@
                                     {if $ShowAdditionalResources}
                                         <a id="btnAddResources" href="#"
                                            class="small-action" data-toggle="modal"
-                                           data-target="#dialogResourceGroups">{translate key=Change} <span
+                                           data-target="#dialogResourceGroups">{translate key=AddResources} <span
                                                     class="fa fa-plus-square"></span></a>
                                     {/if}
                                 </div>
@@ -359,7 +361,7 @@
                         {else}
                             <div class="checkbox">
                                 <input type="checkbox"
-                                       id="termsAndConditionsAcknowledgement" {formname key=TOS_ACKNOWLEDGEMENT} {if $TermsAccepted}checked="checked"{/if}/>
+                                       id="termsAndConditionsAcknowledgement" {formname key=TOS_ACKNOWLEDGEMENT} onclick="$('#termsAndConditionsAcknowledgement')[0].disabled=false" {if $TermsAccepted}checked="checked"{/if} disabled="disabled"/>
                                 <label for="termsAndConditionsAcknowledgement">{translate key=IAccept}</label>
                                 <a href="{$Terms->DisplayUrl()}" style="vertical-align: middle"
                                    target="_blank">{translate key=TheTermsOfService}</a>

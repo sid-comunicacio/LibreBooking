@@ -22,6 +22,11 @@
                     </a>
                 </li>
                 <li role="presentation">
+                    <a role="menuitem" href="#" id="import-productors" class="add-link add-user">{translate key="ImportProductors"}
+                        <span class="glyphicon glyphicon-import"></span>
+                    </a>
+                </li>
+                <li role="presentation">
                     <a role="menuitem" href="{$ExportUrl}" download="{$ExportUrl}" id="export-users"
                        class="add-link add-user"
                        target="_blank">{translate key="Export"}
@@ -66,12 +71,10 @@
             <th>{sort_column key=Name field=ColumnNames::LAST_NAME}</th>
             <th>{sort_column key=Username field=ColumnNames::USERNAME}</th>
             <th>{sort_column key=Email field=ColumnNames::EMAIL}</th>
-            <th>{sort_column key=Phone field=ColumnNames::PHONE_NUMBER}</th>
-            <th>{sort_column key=Organization field=ColumnNames::ORGANIZATION}</th>
-            <th>{sort_column key=Position field=ColumnNames::POSITION}</th>
-            <th>{sort_column key=Created field=ColumnNames::USER_CREATED}</th>
-            <th>{sort_column key=LastLogin field=ColumnNames::LAST_LOGIN}</th>
-            <th class="action">{sort_column key=Status field=ColumnNames::USER_STATUS}</th>
+            <th>{sort_column key=ValidityStart field=ColumnNames::VALIDITY_START}</th> 
+            <th>{sort_column key=ValidityEnd field=ColumnNames::VALIDITY_END}</th> 
+            <th>{sort_column key=SanctionStart field=ColumnNames::SANCTION_START}</th> 
+            <th>{sort_column key=SanctionEnd field=ColumnNames::SANCTION_END}</th> 
             {if $CreditsEnabled}
                 <th class="action">{translate key=Credits}</th>
                 {assign var=colCount value=$colCount+1}
@@ -81,30 +84,24 @@
                 {assign var=colCount value=$colCount+1}
             {/if}
             <th>{translate key='Actions'}</th>
-            <th class="action-delete">
-                <div class="checkbox checkbox-single">
-                    <input type="checkbox" id="delete-all" aria-label="{translate key=All}" title="{translate key=All}"/>
-                    <label for="delete-all"></label>
-                </div>
-            </th>
         </tr>
         </thead>
         <tbody>
         {foreach from=$users item=user}
             {cycle values='row0,row1' assign=rowCss}
             {assign var=id value=$user->Id}
-            <tr class="{$rowCss}" data-userId="{$id}">
+            <tr class="{$rowCss}
+                {if $user->ValidityStart|@strtotime|date_format:"%Y%m%d" > strtotime('now')|date_format:"%Y%m%d" || $user->ValidityEnd|@strtotime|date_format:"%Y%m%d" < strtotime('now')|date_format:"%Y%m%d"} notValid
+                {elseif $user->SanctionStart|@strtotime|date_format:"%Y%m%d" <= strtotime('now')|date_format:"%Y%m%d" && $user->SanctionEnd|@strtotime|date_format:"%Y%m%d" >= strtotime('now')|date_format:"%Y%m%d"} sanctioned
+                {/if}
+            " data-userId="{$id}">
                 <td>{fullname first=$user->First last=$user->Last ignorePrivacy="true"}</td>
                 <td>{$user->Username}</td>
                 <td><a href="mailto:{$user->Email}">{$user->Email}</a></td>
-                <td>{$user->Phone}</td>
-                <td>{$user->Organization}</td>
-                <td>{$user->Position}</td>
-                <td>{format_date date=$user->DateCreated key=short_datetime timezone=$Timezone}</td>
-                <td>{format_date date=$user->LastLogin key=short_datetime timezone=$Timezone}</td>
-                <td class="action"><a href="#" class="update changeStatus">{$statusDescriptions[$user->StatusId]}</a>
-                    {indicator id="userStatusIndicator"}
-                </td>
+                <td>{format_date date=$user->ValidityStart key=general_date timezone=$Timezone}</td> 
+                <td>{format_date date=$user->ValidityEnd key=general_date timezone=$Timezone}</td> 
+                <td>{format_date date=$user->SanctionStart key=general_date timezone=$Timezone}</td> 
+                <td>{format_date date=$user->SanctionEnd key=general_date timezone=$Timezone}</td> 
                 {if $CreditsEnabled}
                     <td class="align-right">
 						<span class="propertyValue inlineUpdate changeCredits"
@@ -141,30 +138,10 @@
                                                        href="#" class="update edit">{translate key="Edit"}</a>
                             </li>
                             <li role="presentation"><a role="menuitem"
-                                                       href="#"
-                                                       class="update changePermissions">{translate key="Permissions"}</a>
-                            </li>
-                            <li role="presentation"><a role="menuitem"
-                                                       href="#"
-                                                       class="update changeGroups">{translate key="Groups"}</a>
-                            </li>
-                            <li role="presentation"><a role="menuitem"
-                                                       href="#"
-                                                       class="update viewReservations">{translate key="Reservations"}</a>
-                            </li>
-                            <li role="presentation"><a role="menuitem"
-                                                       href="#"
-                                                       class="update resetPassword">{translate key="ChangePassword"}</a>
+                                                        href="#" class="update doSanction">{translate key="DoSanction"}</a>
                             </li>
 
                         </ul>
-                    </div>
-                    |
-                    <div class="inline">
-                        <a href="#" class="update delete">
-                            <span class="no-show">{translate key=Delete}</span>
-                            <span class="fa fa-trash icon remove"></span>
-                        </a>
                     </div>
                 </td>
                 <td class="action-delete">
@@ -344,6 +321,79 @@
         </form>
     </div>
 
+    <div id="importProductorsDialog" class="modal" tabindex="-1" role="dialog" aria-labelledby="importProductorsModalLabel"
+         aria-hidden="true">
+        <form id="importProductorsForm" class="form" role="form" method="post" enctype="multipart/form-data"
+              ajaxAction="{ManageUsersActions::ImportProductors}">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title" id="importProductorsModalLabel">{translate key=ImportProductors}</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div id="importProductorsResults" class="validationSummary alert alert-danger no-show">
+                            {* async_validator id="addNewValidityStartDate" key="ValidEmailRequired" *}
+                            {* async_validator id="addNewValidityEndDate" key="ValidEmailRequired" *}
+                            {async_validator id="productorListRequiredValidator" key="ValidEmailRequired"}
+                        </div>
+                        <div id="importProductorsErrors" class="alert alert-danger no-show"></div>
+                        <div id="importProductorsResult" class="alert alert-success no-show">
+                            <span>{translate key=RowsImported}</span>
+
+                            <div id="importProductorsCount" class="inline bold">0</div>
+                            <span>{translate key=ProductorsImportedOk}</span>
+
+                            <div id="importProductorsOk" class="inline bold" style="word-wrap: break-word;"></div>
+                            <a class="" href="{$smarty.server.SCRIPT_NAME}">{translate key=Done}</a>
+                        </div>
+                        <div class="margin-bottom-25" style="overflow:auto;">{*SANTOSM overflow auto*}
+                            <label for="productorsList">{translate key=ProductorsList}</label>
+                            <textarea id="productorsList" {formname key=PRODUCTORS_LIST} class="required"></textarea>
+                            <div class="checkbox">
+                                <input type="checkbox" id="updateProductorsOnImport" {formname key=UPDATE_PRODUCTOR_ON_IMPORT}/>
+                                <label for="updateProductorsOnImport">{translate key=UpdateUsersOnImport}</label>
+                            </div>
+
+                            {* DATA INICI VALIDESA *}
+                            <div class="col-sm-12 col-md-6">
+                                <div class="form-group">
+                                    <label for="addNewValidityStartDate">{translate key=ValidityStart}</label>
+                                    <input type="text" id="addNewValidityStartDate" class="form-control dateinput inline-block required" 
+                                    value="{formatdate date=$AddNewValidityStartDate key=general_date timezone=$Timezone}"/>
+                                    <input {formname key=NEW_VALIDITY_START} id="formattedAddNewValidityStartDate" type="hidden"
+                                                                value="{formatdate date=$AddNewValidityStartDate timezone=$Timezone key=system}"/>
+                                </div>
+                            </div>
+                            {* DATA FI VALIDESA *}
+                            <div class="col-sm-12 col-md-6">
+                                <div class="form-group">
+                                    <label for="addNewValidityEndDate">{translate key=ValidityEnd}</label>
+                                    <input type="text" id="addNewValidityEndDate" class="form-control dateinput inline-block required" size="10"
+                                    value="{formatdate date=$AddNewValidityEndDate key=general_date timezone=$Timezone}"/>
+                                    <input {formname key=NEW_VALIDITY_END} type="hidden" id="formattedAddNewValidityEndDate"
+                                                            value="{formatdate date=$AddNewValidityEndDate key=system timezone=$Timezone}"/>
+                                </div>
+                            </div>
+                        </div>
+                
+                        <div id="importProductorsInstructions" class="alert alert-info">
+                            <div class="note">{translate key=ProductorImportInstructions}</div>
+                            {*<a href="{$smarty.server.SCRIPT_NAME}?dr=template"
+                               download="{$smarty.server.SCRIPT_NAME}?dr=template"
+                               target="_blank">{translate key=GetTemplate} <span class="fa fa-download"></span></a>*}
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        {cancel_button}
+                        {add_button key=Import}
+                        {indicator}
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
     <div id="importUsersDialog" class="modal" tabindex="-1" role="dialog" aria-labelledby="importUsersModalLabel"
          aria-hidden="true">
         <form id="importUsersForm" class="form" role="form" method="post" enctype="multipart/form-data"
@@ -509,6 +559,47 @@
                         {indicator}
                     </div>
                 </div>
+            </div>
+        </form>
+    </div>
+
+    <div id="sanctionDialog" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="sanctionModalLabel"
+         aria-hidden="true">
+        <form id="sanctionForm" method="post" ajaxAction="{ManageUsersActions::DoSanction}">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title" id="doSanctionModalLabel">{translate key=DoSanction}</h4>
+                    </div>
+                    <div class="modal-body">
+                        {* DATA INICI SANCIO *}
+                        <div class="form-group col-sm-12 col-md-6">
+                            <label for="addStartDate">{translate key=SanctionStart}</label>
+                            <input type="text" id="addStartDate" class="form-control dateinput inline-block "
+                                value="{formatdate date=$AddStartDate key=general_date timezone=$Timezone}"/>
+                            <input {formname key=SANCTION_START} id="formattedAddStartDate" type="hidden"
+                                                            value="{formatdate date=$AddStartDate timezone=$Timezone key=system}"/>
+                        </div>
+                        {* DATA FI SANCIO *}
+                        <div class="form-group col-sm-12 col-md-6">
+                            <label for="addEndDate">{translate key=SanctionEnd}</label>
+                            <input type="text" id="addEndDate" class="form-control dateinput inline-block " size="10"
+                                value="{formatdate date=$AddEndDate key=general_date timezone=$Timezone}"/>
+                            <input {formname key=SANCTION_END} type="hidden" id="formattedAddEndDate"
+                                                        value="{formatdate date=$AddEndDate key=system timezone=$Timezone}"/>
+                        </div>
+
+                        <div class="clearfix"></div>
+                    </div>
+                    
+                    <div class="modal-footer">
+                        {cancel_button}
+                        {* delete_button *}
+                        {update_button}
+                        {indicator}
+                    </div>
+                
             </div>
         </form>
     </div>
@@ -700,7 +791,11 @@
                 phone: '{$user->Phone|escape:"javascript"}',
                 organization: '{$user->Organization|escape:"javascript"}',
                 position: '{$user->Position|escape:"javascript"}',
-                reservationColor: '{$user->ReservationColor|escape:"javascript"}'
+                reservationColor: '{$user->ReservationColor|escape:"javascript"}',
+                sanctionStart: '{formatdate date=$user->SanctionStart key=general_date timezone=$Timezone}',
+                sanctionEnd: '{formatdate date=$user->SanctionEnd key=general_date timezone=$Timezone}',
+                validityStart: '{formatdate date=$user->ValidityStart key=general_date timezone=$Timezone}',
+                validityEnd: '{formatdate date=$user->ValidityEnd key=general_date timezone=$Timezone}'
             };
             userManagement.addUser(user);
             {/foreach}
@@ -719,4 +814,12 @@
         });
     </script>
 </div>
+{control type="DatePickerSetupControl" ControlId="addStartDate" AltId="formattedAddStartDate"}
+{control type="DatePickerSetupControl" ControlId="addEndDate" AltId="formattedAddEndDate"}
+
+{control type="DatePickerSetupControl" ControlId="addValidityStartDate" AltId="formattedAddValidityStartDate"}
+{control type="DatePickerSetupControl" ControlId="addValidityEndDate" AltId="formattedAddValidityEndDate"}
+
+{control type="DatePickerSetupControl" ControlId="addNewValidityStartDate" AltId="formattedAddNewValidityStartDate"}
+{control type="DatePickerSetupControl" ControlId="addNewValidityEndDate" AltId="formattedAddNewValidityEndDate"}
 {include file='globalfooter.tpl'}

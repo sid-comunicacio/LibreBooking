@@ -2,6 +2,7 @@
 {assign var=checkout value=$reservation->IsCheckinEnabled() && $reservation->RequiresCheckout()}
 {assign var=class value=""}
 {if $reservation->RequiresApproval}{assign var=class value="pending"}{/if}
+{if $reservation->IsDeleted}{assign var=class value="deleted"}{/if}
 <div class="reservation row {$class}" id="{$reservation->ReferenceNumber}">
     <div class="col-sm-3 col-xs-12">{$reservation->Title|default:$DefaultTitle}</div>
     <div class="col-sm-2 col-xs-12">{fullname first=$reservation->FirstName last=$reservation->LastName ignorePrivacy=$reservation->IsUserOwner($UserId)} {if !$reservation->IsUserOwner($UserId)}{html_image src="users.png" altKey=Participant}{/if}</div>

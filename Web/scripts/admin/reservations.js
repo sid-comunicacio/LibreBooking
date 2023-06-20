@@ -171,6 +171,13 @@ function ReservationManagement(opts, approval) {
             $(this).closest('form').submit();
         });
 
+        elements.userId.keypress(function( event ) {
+            if ( event.which == 13 ){
+                event.preventDefault();
+                filterReservations();
+            }
+        });
+
         elements.filterButton.click(filterReservations);
         elements.clearFilterButton.click(function (e) {
             e.preventDefault();

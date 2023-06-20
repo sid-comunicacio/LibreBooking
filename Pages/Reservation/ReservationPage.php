@@ -144,6 +144,11 @@ interface IReservationPage extends IPage
     public function IsUnavailable();
 
     /**
+     * @param Date $createDate
+     */
+    public function SetCreateDate($createDate);
+
+    /**
      * @param TermsOfService $termsOfService
      */
     public function SetTerms($termsOfService);
@@ -418,6 +423,11 @@ abstract class ReservationPage extends Page implements IReservationPage
     {
         return !$this->available;
     }
+
+    public function SetCreateDate($createDate)
+	{
+		$this->Set('CreateDate', $createDate);
+	}
 
     public function SetTerms($termsOfService)
     {

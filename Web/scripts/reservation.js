@@ -360,7 +360,7 @@ function Reservation(opts) {
     }
 
     function onResourcesChanged() {
-        LoadCustomAttributes();
+        // LoadCustomAttributes();
         CalculateCredits();
     }
 

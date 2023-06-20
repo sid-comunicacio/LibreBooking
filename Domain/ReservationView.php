@@ -196,7 +196,15 @@ class ReservationView
     {
         return $this->StatusId == ReservationStatus::Pending;
     }
-
+    
+    /**
+    * @return bool
+    */
+    public function IsDeleted()
+    {
+        return $this->StatusId == ReservationStatus::Deleted;
+    }
+    
     /**
      * @param ReservationAttachmentView $attachment
      */

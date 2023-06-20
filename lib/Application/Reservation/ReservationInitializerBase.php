@@ -47,7 +47,13 @@ interface IReservationComponentInitializer
      */
     public function GetTimezone();
 
+ 	/**
+	 * @return Date
+	 */
+	public function GetDateCreated();
+
     /**
+     * @param Date $createDate
      * @param Date $startDate
      * @param Date $endDate
      * @param array|SchedulePeriod[] $startPeriods
@@ -55,7 +61,7 @@ interface IReservationComponentInitializer
      * @param int $firstWeekday
      * @parma bool $lockDates
      */
-    public function SetDates(Date $startDate, Date $endDate, $startPeriods, $endPeriods, $firstWeekday, $lockDates = false);
+    public function SetDates(Date $createDate, Date $startDate, Date $endDate, $startPeriods, $endPeriods, $firstWeekday, $lockDates = false);
 
     /**
      * @return UserSession
@@ -310,8 +316,10 @@ abstract class ReservationInitializerBase implements IReservationInitializer, IR
         return $periods[$lastIndex];
     }
 
-    public function SetDates(Date $startDate, Date $endDate, $startPeriods, $endPeriods, $firstWeekday, $lockDates = false)
+    public function SetDates(Date $createDate, Date $startDate, Date $endDate, $startPeriods, $endPeriods, $firstWeekday, $lockDates = false)
     {
+        $this->basePage->SetCreateDate($createDate);
+
         if (count($startPeriods) == 0 || count($endPeriods) == 0) {
             $this->basePage->MakeUnavailable();
             return;

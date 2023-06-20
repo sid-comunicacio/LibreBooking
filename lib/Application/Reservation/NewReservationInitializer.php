@@ -154,6 +154,11 @@ class NewReservationInitializer extends ReservationInitializerBase
 
         return null;
     }
+
+    public function GetDateCreated() {
+        return new Date();
+    }
+        
 }
 
 class BindableResourceData

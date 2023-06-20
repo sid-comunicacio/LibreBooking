@@ -48,6 +48,15 @@ interface IUserRepository extends IUserViewRepository
      * @return int
      */
     public function GetCount();
+
+    /**
+     * @param string $niu
+     * @param Date $validityStart
+     * @param Date $validityEnd
+     * @return void
+     */
+    public function SaveOrUpdateProductor($niu, $validityStart, $validityEnd); 
+
 }
 
 class UserFilter
@@ -488,6 +497,12 @@ class UserRepository implements IUserRepository, IAccountActivationRepository
         );
         $db->Execute($updateUserCommand);
 
+        $updateUserValiditySanctionCommand = new UpdateUserValiditySanctionCommand($user->Id(), $user->ValidityStart(),
+        $user->ValidityEnd(),
+        $user->SanctionStart(),
+        $user->SanctionEnd());
+        $db->Execute($updateUserValiditySanctionCommand);
+
         $removedPermissions = $user->GetRemovedPermissions();
         foreach ($removedPermissions as $resourceId) {
             $db->Execute(new DeleteUserResourcePermission($userId, $resourceId));
@@ -828,6 +843,10 @@ class UserRepository implements IUserRepository, IAccountActivationRepository
         $reader->Free();
         return 0;
     }
+
+    public function SaveOrUpdateProductor($niu, $validityStart, $validityEnd) {
+        ServiceLocator::GetDatabase()->Execute(new SaveOrUpdateProductorCommand($niu, $validityStart, $validityEnd));
+    }
 }
 
 class UserDto
@@ -945,6 +964,10 @@ class UserItemView
     public $Position;
     public $Language;
     public $ReservationColor;
+    public $ValidityStart;
+    public $ValidityEnd;
+    public $SanctionStart;
+    public $SanctionEnd;
     /**
      * @var CustomAttributes
      */
@@ -992,6 +1015,11 @@ class UserItemView
         $user->Position = $row[ColumnNames::POSITION];
         $user->Language = $row[ColumnNames::LANGUAGE_CODE];
 
+        $user->ValidityStart = Date::FromDatabase($row[ColumnNames::VALIDITY_START]);
+        $user->ValidityEnd = Date::FromDatabase($row[ColumnNames::VALIDITY_END]);
+        $user->SanctionStart = Date::FromDatabase($row[ColumnNames::SANCTION_START]);
+        $user->SanctionEnd = Date::FromDatabase($row[ColumnNames::SANCTION_END]);
+        
         if (isset($row[ColumnNames::ATTRIBUTE_LIST])) {
             $user->Attributes = CustomAttributes::Parse($row[ColumnNames::ATTRIBUTE_LIST]);
         } else {

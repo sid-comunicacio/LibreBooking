@@ -101,6 +101,89 @@ class User
     }
 
     /**
+    * @var Date
+    */
+    private $validityStart;
+
+    public function ValidityStart()
+    {
+        return $this->validityStart;
+    }
+
+    /**
+    * @var Date
+    */
+    private $validityEnd;
+
+    /**
+    * @return Date
+    */
+    public function ValidityEnd()
+    {
+        return $this->validityEnd;
+    }
+
+    /**
+    * @param  Date $validityStart
+    * @param  Date $validityEnd
+    */
+    public function ChangeValidity($validityStart, $validityEnd) {
+        $this->validityStart = trim($validityStart) == ''?null:$validityStart; //nullable
+        $this->validityEnd = trim($validityEnd) == ''?null:$validityEnd;
+    }
+
+    /**
+    * @param Date $date
+    * @return bool
+    */
+    public function isValid(Date $date) {
+        return new Date($this->validityStart) <= $date && new Date($this->validityEnd) >= $date;
+    }
+
+    /**
+    * @var Date
+    */
+    private $sanctionStart;
+
+    /**
+    * @return Date
+    */
+    public function SanctionStart()
+    {
+        return $this->sanctionStart;
+    }
+
+    /**
+    * @var Date
+    */
+    private $sanctionEnd;
+    
+    /**
+    * @return Date
+    */
+    public function SanctionEnd()
+    {
+        return $this->sanctionEnd;
+    }
+
+    /**
+    * @param  Date $sanctionStart
+    * @param  Date $sanctionEnd
+    */
+    public function ChangeSanction($sanctionStart, $sanctionEnd) {
+        $this->sanctionStart = trim($sanctionStart) == ''?null:$sanctionStart; //nullable
+        $this->sanctionEnd = trim($sanctionEnd) == ''?null:$sanctionEnd;
+    }
+
+    /**
+    * @param Date $date
+    * @return bool
+    */
+    public function isSanctioned(Date $date) {
+        return new Date($this->sanctionStart) <= $date && new Date($this->sanctionEnd) >= $date;
+    }
+
+    /**
      * @var array|UserGroup[]
      */
     protected $groups = [];
@@ -518,6 +601,11 @@ class User
         $user->attributes[UserAttribute::Position] = $row[ColumnNames::POSITION];
         $user->attributes[UserAttribute::Organization] = $row[ColumnNames::ORGANIZATION];
 
+        $user->validityStart = $row[ColumnNames::VALIDITY_START];
+        $user->validityEnd = $row[ColumnNames::VALIDITY_END];
+        $user->sanctionStart = $row[ColumnNames::SANCTION_START];
+        $user->sanctionEnd = $row[ColumnNames::SANCTION_END];
+        
         $user->isApplicationAdmin = Configuration::Instance()->IsAdminEmail($row[ColumnNames::EMAIL]);
 
         return $user;

@@ -6,7 +6,7 @@ class ReportCommandBuilder
 				,1 as `utilization_type`
 				FROM `reservation_instances` `ri`
 				INNER JOIN `reservation_series` `rs` ON `rs`.`series_id` = `ri`.`series_id`
-				INNER JOIN `users` `owner` ON `owner`.`user_id` = `rs`.`owner_id`
+				INNER JOIN `USERS_VIEW` `owner` ON `owner`.`user_id` = `rs`.`owner_id`
 
 				[JOIN_TOKEN]
 				WHERE 1=1

@@ -172,6 +172,7 @@ class PreReservationFactory implements IPreReservationFactory
         $rules[] = new ReservationBasicInfoRule();
         $rules[] = new AdminExcludedRule(new ReservationStartTimeRule($this->scheduleRepository), $userSession, $this->userRepository);
         $rules[] = new AdminExcludedRule(new PermissionValidationRule(new PermissionServiceFactory()), $userSession, $this->userRepository);
+        $rules[] = new AdminExcludedRule(new ProductorValidationRule($this->userRepository), $userSession, $this->userRepository);
         $rules[] = new AdminExcludedRule(new ResourceMaximumNoticeRule($userSession), $userSession, $this->userRepository);
         $rules[] = new AdminExcludedRule(new ResourceParticipationRule(), $userSession, $this->userRepository);
         $rules[] = new ReservationAttachmentRule();

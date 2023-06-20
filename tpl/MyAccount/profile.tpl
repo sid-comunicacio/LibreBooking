@@ -57,16 +57,11 @@
                 <div class="col-xs-12 col-sm-6">
                     <div class="form-group">
                         <label class="reg" for="email">{translate key="Email"}</label>
-                        {if $AllowEmailAddressChange}
                             {textbox type="email" name="EMAIL" class="input" value="Email" required="required"
                             data-bv-notempty="true"
                             data-bv-notempty-message="{translate key=ValidEmailRequired}"
                             data-bv-emailaddress="true"
                             data-bv-emailaddress-message="{translate key=ValidEmailRequired}" }
-                        {else}
-                            <span>{$Email}</span>
-                            <input type="hidden" {formname key=EMAIL} value="{$Email}"/>
-                        {/if}
                     </div>
                 </div>
             </div>
@@ -117,64 +112,6 @@
                         </select>
                     </div>
                 </div>
-            </div>
-
-            <div class="row">
-                <div class="col-xs-12 col-sm-6">
-                    <div class="form-group">
-                        <label class="reg" for="phone">{translate key="Phone"}</label>
-                        {if $AllowPhoneChange}
-                            <input type="text" id="phone" {formname key="PHONE"} class="form-control" size="20" value="{$Phone}"
-                                    {if $RequirePhone}required="required"
-                                        data-bv-notempty="true"
-                                        data-bv-notempty-message="{translate key=PhoneRequired}"{/if}
-                            />
-                        {else}
-                            <span>{$Phone}</span>
-                            <input type="hidden" {formname key=PHONE} value="{$Phone}"/>
-                        {/if}
-                    </div>
-                </div>
-
-                <div class="col-xs-12 col-sm-6">
-                    <div class="form-group">
-                        <label class="reg" for="txtOrganization">{translate key="Organization"}</label>
-                        {if $AllowOrganizationChange}
-                            <input type="text" id="txtOrganization" {formname key="ORGANIZATION"} class="form-control"
-                                   size="20" value="{$Organization}"
-                                    {if $RequireOrganization}required="required"
-                                        data-bv-notempty="true"
-                                        data-bv-notempty-message="{translate key=OrganizationRequired}"{/if}/>
-                        {else}
-                            <span>{$Organization}</span>
-                            <input type="hidden" {formname key=ORGANIZATION} value="{$Organization}"/>
-                        {/if}
-                    </div>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-xs-12 col-sm-6">
-                    <div class="form-group">
-                        <label class="reg" for="txtPosition">{translate key="Position"}</label>
-                        {if $AllowPositionChange}
-                            <input type="text" id="txtPosition" {formname key="POSITION"} class="form-control"
-                                   size="20" value="{$Position}" {if $RequirePosition}required="required"
-                                data-bv-notempty="true"
-                                data-bv-notempty-message="{translate key=PositionRequired}"{/if}/>
-                        {else}
-                            <span>{$Position}</span>
-                            <input type="hidden" {formname key=POSITION} value="{$Position}"/>
-                        {/if}
-                    </div>
-                </div>
-
-                <div class="col-xs-12 col-sm-6">
-                    {if $Attributes|default:array()|count > 0}
-                        {control type="AttributeControl" attribute=$Attributes[0]}
-                    {/if}
-                </div>
-
             </div>
 
             {if $Attributes|default:array()|count > 1}

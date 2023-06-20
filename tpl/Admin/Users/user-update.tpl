@@ -80,6 +80,26 @@
 		</div>
 	</div>
 
+	<div class="col-sm-12 col-md-6">
+		<div class="form-group">
+			<label for="addValidityStartDate">{translate key=ValidityStart}</label>
+			<input type="text" id="addValidityStartDate" class="form-control dateinput inline-block "
+			value="{formatdate date=$AddValidityStartDate key=general_date timezone=$Timezone}"/>
+			<input {formname key=VALIDITY_START} id="formattedAddValidityStartDate" type="hidden"
+										value="{formatdate date=$AddValidityStartDate timezone=$Timezone key=system}"/>
+		</div>
+	</div>
+
+	<div class="col-sm-12 col-md-6">
+		<div class="form-group">
+			<label for="addValidityEndDate">{translate key=ValidityEnd}</label>
+			<input type="text" id="addValidityEndDate" class="form-control dateinput inline-block " size="10"
+			value="{formatdate date=$AddValidityEndDate key=general_date timezone=$Timezone}"/>
+			<input {formname key=VALIDITY_END} type="hidden" id="formattedAddValidityEndDate"
+									value="{formatdate date=$AddValidityEndDate key=system timezone=$Timezone}"/>
+		</div>
+	</div>
+
 	{foreach from=$Attributes item=attribute}
 		<div class="col-sm-12 col-md-6">
 			{control type="AttributeControl" attribute=$attribute value={$User->GetAttributeValue($attribute->Id())} }

@@ -6,6 +6,7 @@ require_once(ROOT_DIR . 'lib/Application/Authentication/namespace.php');
 require_once(ROOT_DIR . 'lib/Application/User/namespace.php');
 require_once(ROOT_DIR . 'lib/Application/Admin/UserImportCsv.php');
 require_once(ROOT_DIR . 'lib/Application/Admin/CsvImportResult.php');
+require_once(ROOT_DIR . 'lib/Application/Admin/ProductorImportResult.php');
 require_once(ROOT_DIR . 'lib/Email/Messages/InviteUserEmail.php');
 require_once(ROOT_DIR . 'lib/Email/Messages/AccountCreationForUserEmail.php');
 
@@ -24,6 +25,9 @@ class ManageUsersActions
     public const ChangeCredits = 'changeCredits';
     public const InviteUsers = 'inviteUsers';
     public const DeleteMultipleUsers = 'deleteMultipleUsers';
+    public const DoSanction = 'doSanction'; 
+    public const ImportProductors = 'importProductors';
+
 }
 
 interface IManageUsersPresenter
@@ -167,10 +171,31 @@ class ManageUsersPresenter extends ActionPresenter implements IManageUsersPresen
         $this->AddAction(ManageUsersActions::ChangeCredits, 'ChangeCredits');
         $this->AddAction(ManageUsersActions::InviteUsers, 'InviteUsers');
         $this->AddAction(ManageUsersActions::DeleteMultipleUsers, 'DeleteMultipleUsers');
+        $this->AddAction(ManageUsersActions::DoSanction, 'DoSanction');
+        $this->AddAction(ManageUsersActions::ImportProductors, 'ImportProductors');
+
     }
 
-    public function PageLoad()
+    public function DoSanction() {
+        $user = $this->userRepository->LoadById($this->page->GetUserId());
+        $user->ChangeSanction($this->page->GetSanctionStart(), $this->page->GetSanctionEnd());
+        $this->userRepository->Update($user);
+    }
+    
+    public function PageLoad($userTimezone)
     {
+        $startDateString = $this->page->GetSanctionStart();
+        $endDateString = $this->page->GetSanctionEnd();
+        
+        $startDate = $this->GetDate($startDateString, $userTimezone, 0);
+        $endDate = $this->GetDate($endDateString, $userTimezone, 14);
+        
+        $this->page->SetSanctionStart($startDate);
+        $this->page->SetSanctionEnd($endDate);
+        
+        $this->page->SetNewValidityStart($startDate);
+        $this->page->SetNewValidityEnd($endDate);
+
         if ($this->page->GetUserId() != null) {
             $userList = $this->userRepository->GetList(
                 1,
@@ -206,6 +231,22 @@ class ManageUsersPresenter extends ActionPresenter implements IManageUsersPresen
 
         $this->page->BindStatusDescriptions();
     }
+
+
+    private function GetDate($dateString, $timezone, $defaultDays)
+	{
+		$date = null;
+		if (is_null($dateString))
+		{
+			$date = Date::Now()->AddDays($defaultDays)->ToTimezone($timezone)->GetDate();
+		}
+		elseif (!empty($dateString))
+		{
+			$date = Date::Parse($dateString, $timezone);
+		}
+		return $date;
+	}
+
 
     public function Deactivate()
     {
@@ -282,6 +323,8 @@ class ManageUsersPresenter extends ActionPresenter implements IManageUsersPresen
             $this->page->GetFirstName(),
             $this->page->GetLastName(),
             $this->page->GetTimezone(),
+            $this->page->GetValidityStart(),
+            $this->page->GetValidityEnd(),
             $extraAttributes,
             $this->GetAttributeValues()
         );
@@ -354,7 +397,8 @@ class ManageUsersPresenter extends ActionPresenter implements IManageUsersPresen
 
     public function ExportUsers()
     {
-        $this->PageLoad();
+        $userTimezone = $this->server->GetUserSession()->Timezone;
+		$this->PageLoad($userTimezone);
         $this->page->ShowExportCsv();
     }
 
@@ -475,6 +519,18 @@ class ManageUsersPresenter extends ActionPresenter implements IManageUsersPresen
         if ($action == ManageUsersActions::ImportUsers) {
             $this->page->RegisterValidator('fileExtensionValidator', new FileExtensionValidator('csv', $this->page->GetImportFile()));
         }
+
+        if ($action == ManageUsersActions::ImportProductors) {
+            $this->page->RegisterValidator('productorListRequiredValidator', new RequiredValidator($this->page->GetProductorsList()));
+            $this->page->RegisterValidator('newValidityStartRequiredValidator', new RequiredValidator($this->page->GetNewValidityStart()));
+            $this->page->RegisterValidator('newValidityEndRequiredValidator', new RequiredValidator($this->page->GetNewValidityEnd()));
+            Log::Debug('ImportProductors!');
+        }
+            
+        if ($action == ManageUsersActions::DoSanction) {
+            Log::Debug('DoSanction - no validators');
+        }
+            
     }
 
     /***
@@ -536,6 +592,49 @@ class ManageUsersPresenter extends ActionPresenter implements IManageUsersPresen
             }
         }
         return $resources;
+    }
+    
+    public function ImportProductors() { 
+        $productorsList = $this->page->GetProductorsList();
+        Log::Debug('function import productors! %s', $productorsList);
+        preg_match_all('/(?<niu>(?<!\d)\d{7})(?>[^\d]|$)+/m', $productorsList, $matches);
+        $shouldUpdate = $this->page->GetUpdateProductorOnImport();
+        $validityStart = $this->page->GetNewValidityStart();
+        $validityEnd = $this->page->GetNewValidityEnd();
+
+        /**
+         * @var string[] 
+         */    
+        $nius = $matches['niu'];
+        $messages = array();
+        $importCount = 0;
+        $importedNIUs =array();
+        foreach ($nius as $niu) {
+            try {
+                Log::Debug("NIU FOUND '%s'", $niu);
+                if (!$shouldUpdate) {
+                    $uniqueUsernameValidator = new UniqueUserNameValidator($this->userRepository, $niu);
+                    $uniqueUsernameValidator->Validate();
+                    if (!$uniqueUsernameValidator->IsValid()) {
+                        $uuvMsgs = $uniqueUsernameValidator->Messages();
+                        $messages[] = $uuvMsgs[0] . " ({$niu})";
+                        continue;
+                    }
+                }
+                $this->manageUsersService->SaveOrUpdateProductor($niu, $validityStart, $validityEnd);
+                $importedNIUs[] = $niu;
+                Log::Debug("NIU IMPORTED '%s'", $niu);
+                $importCount++;
+            } catch (Exception $ex) {
+                Log::Error('Error importing users. %s', $ex);
+            }
+
+        }
+        Log::Debug("NIUS IMPORTED '%s'", implode(", ", $importedNIUs));
+        Log::Debug("TOTAL NIUS IMPORTED '%d'", $importCount);
+        
+
+        $this->page->SetImportProductorResult(new ProductorImportResult($importCount, $importedNIUs, $messages));
     }
 
     public function ImportUsers()

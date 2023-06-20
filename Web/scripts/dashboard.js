@@ -52,38 +52,38 @@ function Dashboard(opts) {
 
         var reservations = $(".reservation");
 
-        reservations.qtip({
-            position: {
-                my: 'bottom left', at: 'top left', effect: false
-            },
-
-            content: {
-                text: function (event, api) {
-                    var refNum = $(this).attr('id');
-                    $.ajax({url: options.summaryPopupUrl, data: {id: refNum}})
-                        .done(function (html) {
-                            api.set('content.text', html)
-                        })
-                        .fail(function (xhr, status, error) {
-                            api.set('content.text', status + ': ' + error)
-                        });
-
-                    return 'Loading...';
-                }
-            },
-
-            show: {
-                delay: 700, effect: false
-            },
-
-            hide: {
-                fixed: true, delay: 500
-            },
-
-            style: {
-                classes: 'qtip-light qtip-bootstrap'
-            }
-        });
+        // reservations.qtip({
+        //     position: {
+        //         my: 'bottom left', at: 'top left', effect: false
+        //     },
+        //
+        //     content: {
+        //         text: function (event, api) {
+        //             var refNum = $(this).attr('id');
+        //             $.ajax({url: options.summaryPopupUrl, data: {id: refNum}})
+        //                 .done(function (html) {
+        //                     api.set('content.text', html)
+        //                 })
+        //                 .fail(function (xhr, status, error) {
+        //                     api.set('content.text', status + ': ' + error)
+        //                 });
+        //
+        //             return 'Loading...';
+        //         }
+        //     },
+        // 
+        //     show: {
+        //         delay: 700, effect: false
+        //     },
+        //
+        //     hide: {
+        //         fixed: true, delay: 500
+        //     },
+        //
+        //     style: {
+        //         classes: 'qtip-light qtip-bootstrap'
+        //     }
+        // });
 
         reservations.hover(function () {
             $(this).addClass('hover');

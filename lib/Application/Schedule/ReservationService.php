@@ -60,6 +60,41 @@ class ReservationService implements IReservationService
 
         return $reservationListing;
     }
+	public function GetReservationsWithoutCancelled(DateRange $dateRangeUtc, $scheduleId, $targetTimezone, $resourceIds = null)
+	{
+	    $filterResourcesInCode = $resourceIds != null && count($resourceIds) > 100;
+	    $resourceKeys = array();
+	    if ($filterResourcesInCode)
+        {
+            $resourceKeys = array_combine($resourceIds, $resourceIds);
+        }
+		$reservationListing = $this->_coordinatorFactory->CreateReservationListing($targetTimezone);
+
+		$reservations = $this->_repository->GetReservationsWithoutCancelled($dateRangeUtc->GetBegin(), $dateRangeUtc->GetEnd(), null, null, $scheduleId, ($filterResourcesInCode ? array() : $resourceIds));
+		Log::Debug("Found %s reservations for schedule %s between %s and %s", count($reservations), $scheduleId, $dateRangeUtc->GetBegin(), $dateRangeUtc->GetEnd());
+
+		foreach ($reservations as $reservation)
+		{
+		    if ($filterResourcesInCode && array_key_exists($reservation->ResourceId, $resourceKeys))
+            {
+                $reservationListing->Add($reservation);
+            }
+            else
+            {
+                $reservationListing->Add($reservation);
+            }
+		}
+
+		$blackouts = $this->_repository->GetBlackoutsWithin($dateRangeUtc, $scheduleId);
+		Log::Debug("Found %s blackouts for schedule %s between %s and %s", count($blackouts), $scheduleId, $dateRangeUtc->GetBegin(), $dateRangeUtc->GetEnd());
+
+		foreach ($blackouts as $blackout)
+		{
+			$reservationListing->AddBlackout($blackout);
+		}
+
+		return $reservationListing;
+	}
 
     public function Search(DateRange $dateRange, $scheduleId, $resourceIds = null, $ownerId = null, $participantId = null)
     {
@@ -90,6 +125,15 @@ interface IReservationService
      */
     public function GetReservations(DateRange $dateRangeUtc, $scheduleId, $targetTimezone, $resourceIds = null);
 
+    /**
+     * @param DateRange $dateRangeUtc range of dates to search against in UTC
+     * @param int $scheduleId
+     * @param string $targetTimezone timezone to convert the results to
+     * @param null|int[] $resourceIds
+     * @return IReservationListing
+     */
+    function GetReservationsWithoutCancelled(DateRange $dateRangeUtc, $scheduleId, $targetTimezone, $resourceIds = null);
+    
     /**
      * @param DateRange $dateRange
      * @param int $scheduleId
