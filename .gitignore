@@ -6,9 +6,9 @@
 /var/*
 
 # Customized Confiuration Files
-/config/config.php
-/config/log4php.config.xml
-**/*.config.php
+#/config/config.php
+#/config/log4php.config.xml
+#**/*.config.php
 
 /lib/external/phpqrcode/cache/*
 !/lib/external/phpqrcode/cache/index.html
