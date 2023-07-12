@@ -33,13 +33,9 @@ class Log
         $log_level = Configuration::Instance()->GetSectionKey(ConfigSection::LOGGING, ConfigKeys::LOGGING_LEVEL);
 
         if ($log_level != 'none') {
-            $log_folder = Configuration::Instance()->GetSectionKey(ConfigSection::LOGGING, ConfigKeys::LOGGING_FOLDER);
-            $log_sql = Configuration::Instance()->GetSectionKey(ConfigSection::LOGGING, ConfigKeys::LOGGING_SQL, new BooleanConverter());
-            $this->logger->pushHandler(new StreamHandler($log_folder.'/app.log', Logger::DEBUG));
+            $this->logger->pushHandler(new StreamHandler('php://stdout', Logger::DEBUG)); //FORCED TO STDOUT
         }
-            if ($log_sql) {
-                $this->sqlLogger->pushHandler(new StreamHandler($log_folder.'/sql.log', Logger::DEBUG));
-            }
+
     }
 
     /**
