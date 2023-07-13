@@ -201,7 +201,7 @@ class ManageUsersService implements IManageUsersService
         }
     }
 
-    public function UpdateUser($userId, $username, $email, $firstName, $lastName, $timezone, $validityStart, $validityEnd, $extraAttributes)
+    public function UpdateUser($userId, $username, $email, $firstName, $lastName, $timezone, $validityStart, $validityEnd, $extraAttributes, $customAttributes)
     {
         $attributes = new UserAttribute($extraAttributes);
         $user = $this->userRepository->LoadById($userId);
