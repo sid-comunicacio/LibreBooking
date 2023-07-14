@@ -146,6 +146,7 @@ abstract class ReservationEmailMessage extends EmailMessage
             if (($attribute->HasSecondaryEntities()) && in_array($this->reservationSeries->ResourceId(), $attribute->SecondaryEntityIds())) {
                 if (in_array($attribute->Id(), $attribToSend)) {
                     $attributeValues[] = new LBAttribute($attribute, $this->reservationSeries->GetAttributeValue($attribute->Id()));
+                }
             }
         }
 
