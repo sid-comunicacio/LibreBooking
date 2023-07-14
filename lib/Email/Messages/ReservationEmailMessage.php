@@ -141,7 +141,7 @@ abstract class ReservationEmailMessage extends EmailMessage
 
         $attributes = $this->attributeRepository->GetByCategory(CustomAttributeCategory::RESERVATION);
         $attributeValues = [];
-        const $attribToSend = array(1, 5, 6); //Send only Phone, subject and authorized NIU
+        $attribToSend = array(1, 5, 6); //Send only Phone, subject and authorized NIU
         foreach ($attributes as $attribute) {
             if (($attribute->HasSecondaryEntities()) && in_array($this->reservationSeries->ResourceId(), $attribute->SecondaryEntityIds())) {
                 if (in_array($attribute->Id(), $attribToSend)) {
