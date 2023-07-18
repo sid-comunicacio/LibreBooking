@@ -192,7 +192,7 @@ class ReservationFilter
             $filter->_And(new SqlFilterEquals(new SqlFilterColumn(TableNames::RESOURCES, ColumnNames::RESOURCE_ID), $this->resourceId));
         }
         if (!empty($this->userId)) {
-            $filter->_And(new SqlFilterEquals(new SqlFilterColumn(TableNames::USERS, ColumnNames::USER_ID), $this->userId));
+            $filter->_And(new SqlFilterEquals(new SqlFilterColumn("users", ColumnNames::USER_ID), $this->userId));
         }
         if (!empty($this->statusId)) {
             $filter->_And(new SqlFilterEquals(new SqlFilterColumn(TableNames::RESERVATION_SERIES_ALIAS, ColumnNames::RESERVATION_STATUS), $this->statusId));
@@ -222,11 +222,11 @@ class ReservationFilter
                 if ($attributeFilter != null) {
                     $userFilter = new SqlFilterNull(true);
                     $userFilter->_Or($attributeFilter);
-                    $userFilter->_Or(new SqlFilterEquals(new SqlFilterColumn(TableNames::USERS, ColumnNames::USERNAME), $this->userName));
+                    $userFilter->_Or(new SqlFilterEquals(new SqlFilterColumn("users", ColumnNames::USERNAME), $this->userName));
                     $filter->_And($userFilter);
                 }
             } else {
-                $filter->_And(new SqlFilterEquals(new SqlFilterColumn(TableNames::USERS, ColumnNames::USERNAME), $this->userName));
+                $filter->_And(new SqlFilterEquals(new SqlFilterColumn("users", ColumnNames::USERNAME), $this->userName));
             }
         }
         $requiresCheckIn = new SqlFilterEquals(new SqlFilterColumn(TableNames::RESOURCES, ColumnNames::ENABLE_CHECK_IN), 1);

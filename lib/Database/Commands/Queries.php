@@ -691,7 +691,7 @@ class Queries
 			FROM `reservation_instances` `ri`
 			INNER JOIN `reservation_series` `rs` ON `rs`.`series_id` = `ri`.`series_id`
 			INNER JOIN `reservation_users` `ru` ON `ru`.`reservation_instance_id` = `ri`.`reservation_instance_id`
-			INNER JOIN `USERS_VIEW` AS `users_view` ON `users_view`.`user_id` = `rs`.`owner_id`
+			INNER JOIN `USERS_VIEW` AS `users` ON `users`.`user_id` = `rs`.`owner_id`
 			INNER JOIN `USERS_VIEW` AS `owner` ON `owner`.`user_id` = `rs`.`owner_id`
 			INNER JOIN `reservation_resources` `rr` ON `rs`.`series_id` = `rr`.`series_id`
 			INNER JOIN `resources` ON `rr`.`resource_id` = `resources`.`resource_id`
