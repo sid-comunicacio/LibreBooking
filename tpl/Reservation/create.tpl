@@ -361,9 +361,9 @@
                         {else}
                             <div class="checkbox">
                                 <input type="checkbox"
-                                       id="termsAndConditionsAcknowledgement" {formname key=TOS_ACKNOWLEDGEMENT} onclick="$('#termsAndConditionsAcknowledgement')[0].disabled=false" {if $TermsAccepted}checked="checked"{/if} disabled="disabled"/>
+                                       id="termsAndConditionsAcknowledgement" {formname key=TOS_ACKNOWLEDGEMENT} {if $TermsAccepted}checked="checked"{/if} disabled="disabled"/>
                                 <label for="termsAndConditionsAcknowledgement">{translate key=IAccept}</label>
-                                <a href="{$Terms->DisplayUrl()}" style="vertical-align: middle"
+                                <a href="{$Terms->DisplayUrl()}" onclick="$('#termsAndConditionsAcknowledgement')[0].disabled=false" style="vertical-align: middle" 
                                    target="_blank">{translate key=TheTermsOfService}</a>
                             </div>
                         {/if}
