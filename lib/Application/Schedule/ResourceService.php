@@ -140,11 +140,12 @@ class ResourceService implements IResourceService
             $resources = $this->_resourceRepository->GetResourceList();
         }
 
-        if (!$filter->HasFilter()) {
+        /*if (!$filter->HasFilter()) {
             $resourceIds = [];
         } else {
             $resourceIds = $filter->FilterResources($resources, $this->_resourceRepository, $this->_attributeService);
-        }
+        }*/
+        $resourceIds = $filter->FilterResources($resources, $this->_resourceRepository, $this->_attributeService); //"As is in version 2.7.1"
 
         return $this->Filter($resources, $user, $includeInaccessibleResources, $resourceIds);
     }

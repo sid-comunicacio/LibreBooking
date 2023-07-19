@@ -296,7 +296,8 @@ class SchedulePage extends ActionPage implements ISchedulePage
         $this->Set('UserIdFilter', $this->GetOwnerId());
         $this->Set('ParticipantIdFilter', $this->GetParticipantId());
         $this->Set('ShowWeekNumbers', Configuration::Instance()->GetSectionKey(ConfigSection::SCHEDULE, ConfigKeys::SCHEDULE_SHOW_WEEK_NUMBERS, new BooleanConverter()));
-
+        
+        $this->Set('ResourceIds', []); // Error: TypeError: implode(): Argument #1 ($pieces) must be of type array, string given in /var/www/html/audiovisuals/lib/Common/SmartyPage.php:907
         if ($this->IsMobile && !$this->IsTablet) {
             if ($this->ScheduleStyle == ScheduleStyle::Tall) {
                 $this->Display('Schedule/schedule-flipped.tpl');
