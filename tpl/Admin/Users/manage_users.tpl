@@ -817,9 +817,6 @@
 {control type="DatePickerSetupControl" ControlId="addStartDate" AltId="formattedAddStartDate"}
 {control type="DatePickerSetupControl" ControlId="addEndDate" AltId="formattedAddEndDate"}
 
-{control type="DatePickerSetupControl" ControlId="addValidityStartDate" AltId="formattedAddValidityStartDate"}
-{control type="DatePickerSetupControl" ControlId="addValidityEndDate" AltId="formattedAddValidityEndDate"}
-
 {control type="DatePickerSetupControl" ControlId="addNewValidityStartDate" AltId="formattedAddNewValidityStartDate"}
 {control type="DatePickerSetupControl" ControlId="addNewValidityEndDate" AltId="formattedAddNewValidityEndDate"}
 {include file='globalfooter.tpl'}

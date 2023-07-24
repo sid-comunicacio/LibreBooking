@@ -84,9 +84,9 @@
 		<div class="form-group">
 			<label for="addValidityStartDate">{translate key=ValidityStart}</label>
 			<input type="text" id="addValidityStartDate" class="form-control dateinput inline-block "
-			value="{formatdate date=$AddValidityStartDate key=general_date timezone=$Timezone}"/>
+			value="{formatdate date=$User->ValidityStart() key=general_date timezone=$Timezone}"/>
 			<input {formname key=VALIDITY_START} id="formattedAddValidityStartDate" type="hidden"
-										value="{formatdate date=$AddValidityStartDate timezone=$Timezone key=system}"/>
+										value="{formatdate date=$User->ValidityStart() timezone=$Timezone key=system}"/>
 		</div>
 	</div>
 
@@ -94,9 +94,9 @@
 		<div class="form-group">
 			<label for="addValidityEndDate">{translate key=ValidityEnd}</label>
 			<input type="text" id="addValidityEndDate" class="form-control dateinput inline-block " size="10"
-			value="{formatdate date=$AddValidityEndDate key=general_date timezone=$Timezone}"/>
+			value="{formatdate date=$User->ValidityEnd() key=general_date timezone=$Timezone}"/>
 			<input {formname key=VALIDITY_END} type="hidden" id="formattedAddValidityEndDate"
-									value="{formatdate date=$AddValidityEndDate key=system timezone=$Timezone}"/>
+									value="{formatdate date=$User->ValidityEnd() key=system timezone=$Timezone}"/>
 		</div>
 	</div>
 
@@ -107,3 +107,6 @@
 	{/foreach}
 		<div class="clearfix">&nbsp;</div>
 </div>
+
+{control type="DatePickerSetupControl" ControlId="addValidityStartDate" AltId="formattedAddValidityStartDate"}
+{control type="DatePickerSetupControl" ControlId="addValidityEndDate" AltId="formattedAddValidityEndDate"}
