@@ -126,7 +126,7 @@ Laboratoris Audiovisuals
 	<p><strong>Aprovada per:</strong> {$ApprovedBy}</p>
 {/if}
 
-<p><strong>N&uactue;mero de refer&egrave;ncia:</strong> {$ReferenceNumber}</p>
+<p><strong>N&uacute;mero de refer&egrave;ncia:</strong> {$ReferenceNumber}</p>
 
 {if !$Deleted}
 	<a href="{$ScriptUrl}/{$ReservationUrl}">Veure aquesta reserva</a>
