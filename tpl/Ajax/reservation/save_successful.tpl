@@ -21,7 +21,7 @@
 		{$total_value = 0}
 		{foreach from=$Resources item=resource name=resource_list}
 			<span class="resource">{$resource->GetName()}{if !$smarty.foreach.resource_list.last}, {/if}</span>
-			{$total_value = $total_value + $resource->GetAttributeValue(9)}
+			{$total_value = $total_value + intval($resource->GetAttributeValue(9))}
 		{/foreach}
 	</div>
 	
