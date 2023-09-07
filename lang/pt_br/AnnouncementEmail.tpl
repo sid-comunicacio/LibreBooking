@@ -1,1 +1,1 @@
-﻿{$AnnouncementText|nl2br}
+{$AnnouncementText|nl2br}

@@ -1,4 +1,4 @@
-﻿<p>
+<p>
     Sua reserva encerrará em breve.
 </p>
 

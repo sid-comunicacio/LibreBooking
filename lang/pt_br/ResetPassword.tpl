@@ -1,4 +1,4 @@
-﻿<p>
+<p>
     Aqui está sua senha temporária em {$AppTitle}: {$TemporaryPassword}
 </p>
 

@@ -1,4 +1,4 @@
-﻿<p>
+<p>
     <strong>Detalhes da Reserva:</strong>
 </p>
 

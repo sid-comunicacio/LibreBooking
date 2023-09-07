@@ -1,4 +1,4 @@
-﻿<p>A sua reserva irá começar em breve.</p>
+<p>A sua reserva irá começar em breve.</p>
 
 <p>
     <strong>Detalhes da Reserva:</strong>

@@ -1,4 +1,4 @@
-﻿<p>
+<p>
     Check-in não efetuado.
 </p>
 

@@ -1,4 +1,4 @@
-﻿<p>
+<p>
     {$ParticipantDetails}
     {if ($InvitationAction == InvitationAction::Decline || $InvitationAction == InvitationAction::CancelAll || $InvitationAction == InvitationAction::CancelInstance)}
         declinou o seu convite de participação na reserva.

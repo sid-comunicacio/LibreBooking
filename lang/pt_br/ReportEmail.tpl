@@ -1,4 +1,4 @@
-﻿<p>
+<p>
     Seu relatório de {$AppTitle} está em anexo.
 </p>
 <br />

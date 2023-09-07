@@ -1,4 +1,4 @@
-﻿<p>
+<p>
     Você está recebendo esta mensagem porque tem uma reserva futura no {$ResourceName} e sua disponibilidade foi alterada.
 </p>
 

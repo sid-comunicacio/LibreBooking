@@ -1,4 +1,4 @@
-﻿<p>
+<p>
     Sua série de reservas recorrentes para {$ResourceName} irá terminar em {formatdate date=$StartDate key=reservation_email}.
 </p>
 

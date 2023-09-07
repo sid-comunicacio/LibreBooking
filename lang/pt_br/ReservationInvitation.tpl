@@ -1,4 +1,4 @@
-﻿<p>
+<p>
     {if $Deleted}
         {$UserName} excluiu uma reserva.
     {else}

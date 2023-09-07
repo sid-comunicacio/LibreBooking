@@ -1,4 +1,4 @@
-﻿<p>
+<p>
     Você criou uma nova conta em {$AppTitle} com as seguintes informações:
     <br />
     E-mail: {$EmailAddress}
