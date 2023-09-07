@@ -208,7 +208,7 @@ class ManageReturnsPresenter extends ActionPresenter
         $this->page->SetReservationTitle($title);
         $this->page->SetReservationDescription($description);
 
-        $today = Date::Create(Date('Y'), Date('m'), Date('d'), 0, 0, 0, $timezone);
+        $today = Date::Create(Date('Y'), Date('m'), Date('d'), 0, 0, 0, $userTimezone);
         $filter = new ReservationFilter($startDate, $endDate, null, null, $resourceId, null,
             null, null, null, null, null, null, $userId, $attributeFilters);
 
