@@ -191,8 +191,8 @@ class ManageDeliveriesPresenter extends ActionPresenter
             $attributeFilters[] = new LBAttribute($attribute, $attributeValue);
         }
 
-        $this->page->SetStartDate($startDate);
-        $this->page->SetEndDate($endDate);
+        /*$this->page->SetStartDate($startDate);
+        $this->page->SetEndDate($endDate);*/
         $this->page->SetReferenceNumber($referenceNumber);
         $this->page->SetScheduleId($scheduleId);
         $this->page->SetResourceId($resourceId);
@@ -206,7 +206,7 @@ class ManageDeliveriesPresenter extends ActionPresenter
         $this->page->SetReservationTitle($title);
         $this->page->SetReservationDescription($description);
 
-        $today = Date::Create(Date('Y'), Date('m'), Date('d'), 0, 0, 0, $timezone);
+        $today = Date::Create(Date('Y'), Date('m'), Date('d'), 0, 0, 0, $userTimezone);
         $filter = new ReservationFilter($today, $today, null, null, null, null,
             null, null, null, null, null, null, $userId, $attributeFilters);
 
