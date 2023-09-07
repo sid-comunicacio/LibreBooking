@@ -130,6 +130,16 @@
             <div class="collapse navbar-collapse" id="booked-navigation">
                 <ul class="nav navbar-nav">
                     {if isset($LoggedIn) && $LoggedIn}
+                        <!-- SIDCC -->   
+						{if isset($CanViewResponsibilities) && $CanViewResponsibilities}
+                            <li id="navResponsibilitiesRAReservations">
+                                <a href="{$Path}admin/manage_resource_deliveries.php">{translate key="ReservationDelivery"}</a>
+                            </li>
+                            <li id="navResponsibilitiesRAReservations">
+                                <a href="{$Path}admin/manage_resource_returns.php">{translate key="ReservationReturn"}</a>
+                            </li>
+						{/if}
+                        <!-- SIDCC END -->   
                         <li id="navDashboard"><a href="{$Path}{Pages::DASHBOARD}">{translate key="Dashboard"}</a></li>
                         <li class="dropdown" id="navMyAccountDropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">{translate key="MyAccount"} <b
@@ -189,6 +199,7 @@
                                     <li class="divider"></li>
                                     <li id="navManageSchedules"><a
                                                 href="{$Path}admin/manage_schedules.php">{translate key="ManageSchedules"}</a>
+                                    </li>
                                     <li id="navManageResources"><a
                                                 href="{$Path}admin/manage_resources.php">{translate key="ManageResources"}</a>
                                     </li>
@@ -203,7 +214,15 @@
                                     <li id="navManageGroups"><a
                                                 href="{$Path}admin/manage_groups.php">{translate key="ManageGroups"}</a>
                                     </li>
-
+									<!-- SIDCC -->
+									<li id="navManageGroups"><a
+                                                href="{$Path}admin/manage_producers.php">{translate key="ManageProducers"}</a>
+                                    </li>
+                                    <li id="navManageGroups"><a
+                                                href="{$Path}admin/manage_users.php">{translate key="ManageSanctioneds"}</a>
+                                    </li>
+                                    <li class="divider"></li>
+									<!-- END SIDCC -->
                                     <li id="navManageAnnouncements"><a
                                                 href="{$Path}admin/manage_announcements.php">{translate key="ManageAnnouncements"}</a>
                                     </li>

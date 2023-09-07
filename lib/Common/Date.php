@@ -446,7 +446,7 @@ class Date
     public function AddDays($days)
     {
         // can also use DateTime->modify()
-        return new Date($this->Format(self::SHORT_FORMAT) . " +" . $days . " days", $this->timezone);
+        return new Date($this->Format(self::SHORT_FORMAT) . ($days>0?" +":" -") . abs($days) . " days", $this->timezone);
     }
 
     /**
@@ -455,7 +455,7 @@ class Date
      */
     public function AddMonths($months)
     {
-        return new Date($this->Format(self::SHORT_FORMAT) . " +" . $months . " months", $this->timezone);
+        return new Date($this->Format(self::SHORT_FORMAT) . ($months>0?" +":" -") . abs($months) . " months", $this->timezone);
     }
 
     /**
@@ -464,7 +464,7 @@ class Date
      */
     public function AddYears($years)
     {
-        return new Date($this->Format(self::SHORT_FORMAT) . " +" . $years . " years", $this->timezone);
+        return new Date($this->Format(self::SHORT_FORMAT) . ($years>0?" +":" -") . abs($years) . " years", $this->timezone);
     }
 
     /**
@@ -497,7 +497,7 @@ class Date
      */
     public function AddHours($hours)
     {
-        return new Date($this->Format(self::SHORT_FORMAT) . " +" . $hours . " hours", $this->timezone);
+        return new Date($this->Format(self::SHORT_FORMAT) . ($hours>0?" +":" -") . abs($hours) . " hours", $this->timezone);
     }
 
     /**
