@@ -1034,6 +1034,8 @@ class ca extends en_gb
         $strings['ProductorsImportedOk'] = 'NIUs importats';
         $strings['ReservationDelivery'] = 'Entregues';
         $strings['ReservationReturn'] = 'Devolucions';
+        $strings['ManageDeliveries'] = 'Buscar una petició per a fer l\'entrega';
+        $strings['ManageReturns'] = 'Buscar una petició per a fer la devolució';
         $strings['ManageProducers'] = 'Productors';
         $strings['ManageSanctioneds'] = 'Sancionats';
         $strings['NIUFilter'] = 'Filtrar peticions per NIU';
