@@ -1032,6 +1032,11 @@ class ca extends en_gb
         $strings['ProductorImportInstructions'] = '<ul><li>L\'entrada consisteix en un llistat de NIUs.</li><li>Els NIUs consisteixen en set d&iacute;gits i es poden separar per espais, comes o, en general, qualsevol car&agrave;cter no num&egrave;ric.</li><li>A tots els productors se\'ls aplicar&agrave; o renovará el per&iacute;ode de validesa.</li></ul>';
         $strings['ProductorsList'] = 'Llistat de productors (NIUs)';
         $strings['ProductorsImportedOk'] = 'NIUs importats';
+        $strings['ReservationDelivery'] = 'Entregues';
+        $strings['ReservationReturn'] = 'Devolucions';
+        $strings['ManageProducers'] = 'Productors';
+        $strings['ManageSanctioneds'] = 'Sancionats';
+        $strings['NIUFilter'] = 'Filtrar peticions per NIU';
         
         $this->Strings = $strings;
     }
