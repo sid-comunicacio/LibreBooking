@@ -229,6 +229,7 @@ class ReservationFilter
                 $filter->_And(new SqlFilterEquals(new SqlFilterColumn("users", ColumnNames::USERNAME), $this->userName));
             }
         }
+        /*
         $requiresCheckIn = new SqlFilterEquals(new SqlFilterColumn(TableNames::RESOURCES, ColumnNames::ENABLE_CHECK_IN), 1);
         if ($this->missedCheckin) {
             $filter->_And(
@@ -241,7 +242,7 @@ class ReservationFilter
             $filter->_And($requiresCheckIn->_And(
                 new SqlFilterEquals(new SqlFilterColumn(TableNames::RESERVATION_INSTANCES_ALIAS, ColumnNames::CHECKOUT_DATE), null)
             )->_Or(new SqlFilterLessThanColumn(new SqlFilterColumn(TableNames::RESERVATION_INSTANCES_ALIAS, ColumnNames::CHECKOUT_DATE), new SqlFilterColumn(TableNames::RESERVATION_INSTANCES_ALIAS, ColumnNames::RESERVATION_END))));
-        }
+        } */
 
         if ($surroundFilter != null || $startFilter != null || $endFilter != null) {
             $dateFilter = new SqlFilterNull(true);
