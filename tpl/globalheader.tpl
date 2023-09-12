@@ -239,7 +239,7 @@
                                 </ul>
                             </li>
                         {/if}
-                        {if isset($CanViewResponsibilities) && $CanViewResponsibilities}
+                        {* {if isset($CanViewResponsibilities) && $CanViewResponsibilities}
                             <li class="dropdown" id="navResponsibilitiesDropdown">
                                 <a href="#" class="dropdown-toggle"
                                    data-toggle="dropdown">{translate key="Responsibilities"} <b
@@ -282,8 +282,8 @@
                                     </li>
                                 </ul>
                             </li>
-                        {/if}
-                        {if isset($CanViewReports) && $CanViewReports}
+                        {/if} *}
+                        {* {if isset($CanViewReports) && $CanViewReports}
                             <li class="dropdown" id="navReportsDropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">{translate key="Reports"} <b
                                             class="caret"></b></a>
@@ -299,7 +299,7 @@
                                     </li>
                                 </ul>
                             </li>
-                        {/if}
+                        {/if} *}
                     {/if}
 
                 </ul>
