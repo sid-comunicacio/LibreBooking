@@ -195,7 +195,7 @@ function Reservation(opts) {
     };
 
     function SetDeleteReason() {
-        var reason = $(".deleteReason").val();
+        var reason = $("#deleteReason").val();
         if (_.isEmpty(reason)) {
             reason = $('#deleteReasonRecurring').val();
         }

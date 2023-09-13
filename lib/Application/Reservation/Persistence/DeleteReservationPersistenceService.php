@@ -30,6 +30,7 @@ class DeleteReservationPersistenceService implements IDeleteReservationPersisten
 
     public function Persist($existingReservationSeries)
     {
+        $existingReservationSeries->Delete(ServiceLocator::GetServer()->GetUserSession(), $existingReservationSeries->GetDeleteReason());
         $this->_repository->Delete($existingReservationSeries);
     }
 }
