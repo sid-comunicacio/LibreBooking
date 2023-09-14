@@ -699,7 +699,7 @@ class Queries
 			LEFT JOIN `reservation_reminders` AS `start_reminder` ON `start_reminder`.`series_id` = `rs`.`series_id` AND `start_reminder`.`reminder_type` = 0
 			LEFT JOIN `reservation_reminders` AS `end_reminder` ON `end_reminder`.`series_id` = `rs`.`series_id` AND `end_reminder`.`reminder_type` = 1
 			[JOIN_TOKEN]
-			WHERE `rs`.`status_id` <> 2
+			WHERE `rs`.`status_id` > 0
 			[AND_TOKEN]
 			ORDER BY `ri`.`start_date` ASC';
 
