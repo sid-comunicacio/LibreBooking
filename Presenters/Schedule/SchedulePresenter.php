@@ -107,7 +107,7 @@ class SchedulePresenter extends ActionPresenter implements ISchedulePresenter
             foreach ($resources as $resource) {
                 $rids[] = $resource->Id;
             }
-            $reservationListing = $this->_reservationService->GetReservations($scheduleDates, $activeScheduleId, $targetTimezone, $rids);
+            $reservationListing = $this->_reservationService->GetReservationsWithoutCancelled($scheduleDates, $activeScheduleId, $targetTimezone, $rids);
         }
 
         $dailyLayout = $this->_scheduleService->GetDailyLayout($activeScheduleId, new ScheduleLayoutFactory($targetTimezone), $reservationListing);
