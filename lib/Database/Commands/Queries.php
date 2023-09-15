@@ -1266,6 +1266,7 @@ class QueryBuilder
     {
         return self::Build(self::$SELECT_LIST_FRAGMENT, null, 'AND ' . self::$DATE_FRAGMENT . ' AND
 					(@all_owners = 1 OR `ru`.`user_id` IN (@userid) ) AND
+					(@all_statuses = 1 OR rs.status_id IN (@statusid)) AND
 					(@levelid = 0 OR `ru`.`reservation_user_level` = @levelid) AND
 					(@all_schedules = 1 OR `resources`.`schedule_id` IN (@scheduleid)) AND
 					(@all_resources = 1 OR `rr`.`resource_id` IN (@resourceid)) AND
