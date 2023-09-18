@@ -98,7 +98,7 @@ class ReservationService implements IReservationService
 
     public function Search(DateRange $dateRange, $scheduleId, $resourceIds = null, $ownerId = null, $participantId = null)
     {
-        $reservations = $this->_repository->GetReservations($dateRange->GetBegin(), $dateRange->GetEnd(), $ownerId, null, $scheduleId, $resourceIds, false, $participantId);
+        $reservations = $this->_repository->GetReservationsWithoutCancelled($dateRange->GetBegin(), $dateRange->GetEnd(), $ownerId, null, $scheduleId, $resourceIds, false, $participantId);
         $blackouts = $this->_repository->GetBlackoutsWithin($dateRange, $scheduleId, $resourceIds);
 
         /** @var ReservationListItem[] $items */
