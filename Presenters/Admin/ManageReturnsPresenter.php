@@ -209,8 +209,26 @@ class ManageReturnsPresenter extends ActionPresenter
         $this->page->SetReservationDescription($description);
 
         $today = Date::Create(Date('Y'), Date('m'), Date('d'), 0, 0, 0, $userTimezone);
-        $filter = new ReservationFilter($startDate, $endDate, null, null, $resourceId, null,
-            null, null, null, null, null, null, $userId, $attributeFilters);
+
+        $filter = new ReservationFilter(
+            $startDate //startDate
+            , $endDate //endDate
+            , null //referenceNumber
+            , null //scheduleId
+            , $resourceId //resourceId
+            , null //userId
+            , null //statusId
+            , null //resourceStatusId
+            , null //resourceStatusReasonId
+            , null //attributes
+            , null //title
+            , null //description
+            , null //missedCheckin
+            , null //missedCheckout
+            , $userId //userName
+            , $attributeFilters); //authorizedNIU
+            
+
 
         $reservations = $this->manageReservationsService->LoadFiltered($this->page->GetPageNumber(),
             $this->page->GetPageSize(),
