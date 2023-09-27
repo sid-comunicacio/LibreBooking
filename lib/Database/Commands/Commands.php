@@ -1780,6 +1780,10 @@ class GetReservationListWithoutCancelledCommand extends SqlCommand
         $this->AddParameter(new Parameter(ParameterNames::ALL_SCHEDULES, (int)empty($scheduleIds)));
         $statuses = array(1, 3);
         $this->AddParameter(new Parameter(ParameterNames::STATUS_ID, $statuses));
+        $this->AddParameter(new Parameter(ParameterNames::ALL_STATUSES, 0));
+        $this->AddParameter(new Parameter(ParameterNames::All_OWNERS, (int)empty($userIds)));
+        $this->AddParameter(new Parameter(ParameterNames::ALL_PARTICIPANTS, (int)empty($participantIds)));
+    }
     }
 
     public function ContainsGroupConcat()
