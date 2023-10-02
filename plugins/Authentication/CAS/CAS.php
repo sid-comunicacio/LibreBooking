@@ -89,7 +89,7 @@ class CAS extends Authentication implements IAuthentication
         $isproductor = $srow['count(*)'];
 
         // Find out if user is in group productors
-        $ingroup_res = ServiceLocator::GetDatabase()->Query(new AdHocCommand("SELECT COUNT(ug.user_id) FROM user_groups ug JOIN users u ON ug.user_id = u.user_id WHERE ug.group_id = \"$addgroupid_productor\" AND u.username = \"$username\""));
+        $ingroup_res = ServiceLocator::GetDatabase()->Query(new AdHocCommand("SELECT count(*) FROM user_groups ug JOIN users u ON ug.user_id = u.user_id WHERE ug.group_id = \"$addgroupid_productor\" AND u.username = \"$username\""));
         $srow = $ingroup_res->GetRow();
         $ingroup = $srow['count(*)'];
         
