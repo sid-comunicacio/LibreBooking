@@ -95,7 +95,6 @@ class CAS extends Authentication implements IAuthentication
         
         // If is not a productor and is in group, delete the group assignment
         if(!$isproductor && $ingroup) {
-        
                 ServiceLocator::GetDatabase()->Execute(new AdHocCommand("delete from user_groups where group_id = $addgroupid_productor AND user_id = (SELECT user_id FROM users WHERE username = \"$username\")"));
         }
         // If is a productor and is not in group, insert the group assignment
