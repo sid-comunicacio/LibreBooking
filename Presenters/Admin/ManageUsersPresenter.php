@@ -25,7 +25,7 @@ class ManageUsersActions
     public const ChangeCredits = 'changeCredits';
     public const InviteUsers = 'inviteUsers';
     public const DeleteMultipleUsers = 'deleteMultipleUsers';
-    public const DoSanction = 'doSanction'; 
+    public const DoSanction = 'doSanction';
     public const ImportProductors = 'importProductors';
 
 }

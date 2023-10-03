@@ -49,9 +49,15 @@ class ManageProducersPresenter extends ActionPresenter implements IManageProduce
     private $page;
 
     /**
-     * @var \UserRepository
+     * @var UserRepository
      */
     private $userRepository;
+
+    /**
+     * @var ProducerRepository
+     */
+    private $producerRepository;
+
 
     /**
      * @param UserRepository $userRepository
